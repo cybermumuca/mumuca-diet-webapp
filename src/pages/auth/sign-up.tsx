@@ -16,24 +16,26 @@ import { useForm } from "react-hook-form";
 import { signUp } from "@/api/sign-up";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
+import { useEffect } from "react";
 
 const signUpSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email(),
-  password: z.string(),
+  firstName: z.string().min(1, "O Nome é obrigatório"),
+  lastName: z.string().min(1, "O Sobrenome é obrigatório"),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres"),
 });
 
 type SignUpSchema = z.infer<typeof signUpSchema>;
 
-// TODO: display validation error message to user
 export function SignUp() {
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    setError,
+    formState: { isSubmitting, errors },
   } = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
@@ -62,9 +64,39 @@ export function SignUp() {
       });
     } catch (error) {
       console.log(error);
-      toast.error("Erro ao criar conta");
+      if (isAxiosError(error) && error.response?.status === 400) {
+        const details = error.response.data.details;
+
+        Object.entries(details).forEach(([field, message]) => {
+          setError(field as keyof SignUpSchema, {
+            message: message as string,
+          });
+        });
+
+        const errorMessages = Object.values(details).join("\n");
+
+        toast.error("Erro de validação", {
+          description: errorMessages,
+        });
+      } else {
+        toast.error("Erro ao criar conta");
+      }
     }
   }
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors)
+        .map((error) => error.message)
+        .join("<br />");
+
+      toast.error("Erro de validação", {
+        description: <span dangerouslySetInnerHTML={{ __html: errorMessages }} />,
+        closeButton: true,
+        duration: 10000,
+      });
+    }
+  }, [errors]);
 
   return (
     <>
@@ -86,6 +118,7 @@ export function SignUp() {
                     id="first-name"
                     type="text"
                     autoCorrect="false"
+                    className={errors.firstName ? "border-red-500" : ""}
                     {...register("firstName")}
                   />
                 </div>
@@ -95,6 +128,7 @@ export function SignUp() {
                     id="last-name"
                     type="text"
                     autoCorrect="false"
+                    className={errors.lastName ? "border-red-500" : ""}
                     {...register("lastName")}
                   />
                 </div>
@@ -107,6 +141,7 @@ export function SignUp() {
                   autoCapitalize="none"
                   autoComplete="email"
                   autoCorrect="off"
+                  className={errors.email ? "border-red-500" : ""}
                   {...register("email")}
                 />
               </div>
@@ -115,6 +150,7 @@ export function SignUp() {
                 <Input
                   id="password"
                   type="password"
+                  className={errors.password ? "border-red-500" : ""}
                   {...register("password")}
                 />
               </div>
