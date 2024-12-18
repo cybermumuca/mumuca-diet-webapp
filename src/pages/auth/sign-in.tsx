@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
@@ -20,7 +21,7 @@ import { z } from "zod";
 
 const signInSchema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().min(8),
 });
 
 type SignInSchema = z.infer<typeof signInSchema>;
@@ -31,7 +32,7 @@ export function SignIn() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -46,11 +47,18 @@ export function SignIn() {
   async function handleAuthenticate({ email, password }: SignInSchema) {
     try {
       await authenticate({ email, password });
-    } catch (error) {
-      console.log(error);
+    } catch {
       toast.error("Credenciais inválidas");
     }
   }
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      setTimeout(() => {
+        toast.error("Credenciais inválidas");
+      }, 1000);
+    }
+  }, [errors]);
 
   return (
     <>
@@ -67,7 +75,7 @@ export function SignIn() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  type="email"
+                  type="text"
                   autoCapitalize="none"
                   autoComplete="email"
                   autoCorrect="off"
