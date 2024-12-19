@@ -8,7 +8,7 @@ import { NavItem } from "@/components/nav-item";
 
 export function AppLayout() {
   const navigate = useNavigate();
-  
+
   useLayoutEffect(() => {
     const interceptorId = api.interceptors.response.use(
       (response) => response,
@@ -39,18 +39,9 @@ export function AppLayout() {
       </div>
       <nav className="fixed bottom-0 left-0 right-0 bg-background border-t">
         <div className="flex justify-around items-center h-16">
-          <NavItem
-            to="/"
-            icon={<Home className="w-6 h-6" />}
-          />
-          <NavItem
-            to="/foods"
-            icon={<Utensils className="w-6 h-6" />}
-          />
-          <NavItem
-            to="/body"
-            icon={<Activity className="w-6 h-6" />}
-          />
+          <NavItem to="/" icon={<Home className="w-6 h-6" />} />
+          <NavItem to="/foods" icon={<Utensils className="w-6 h-6" />} />
+          <NavItem to="/body" icon={<Activity className="w-6 h-6" />} />
           <NavItem
             to="/profile"
             icon={
@@ -65,5 +56,3 @@ export function AppLayout() {
     </div>
   );
 }
-
-
