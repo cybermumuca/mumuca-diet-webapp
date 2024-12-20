@@ -14,7 +14,7 @@ export interface ListFoodsResponse {
 }
 
 export async function listFoods(query: ListFoodsQuery = {}): Promise<ListFoodsResponse> {
-  const { sort = "title", size = 20, page = 0 } = query;
+  const { sort = "title", size = 10, page = 0 } = query;
 
   const response = await api.get<ListFoodsResponse>("/v1/foods", {
     params: {
