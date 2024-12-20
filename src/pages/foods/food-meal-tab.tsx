@@ -1,7 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import { Outlet, useNavigate, useSearchParams } from "react-router";
 
@@ -42,11 +41,7 @@ export function FoodMealTab() {
             }}
           />
         </div>
-        <Button size="icon" variant="outline">
-          <Plus className="h-4 w-4" />
-        </Button>
       </div>
-
       <Tabs value={value} onValueChange={handleTabChange}>
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="foods">Comidas</TabsTrigger>

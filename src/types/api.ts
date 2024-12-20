@@ -4,3 +4,5 @@ export interface Pagination {
   totalElements: number;
   totalPages: number;
 }
+
+export type SortOrder = "ASC" | "DESC";
