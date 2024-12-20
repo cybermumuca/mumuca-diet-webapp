@@ -9,6 +9,10 @@ import { Foods } from "./pages/foods/foods";
 import { Profile } from "./pages/profile/profile";
 import { NotFound } from "./pages/boundaries/not-found";
 import { ErrorBoundary } from "./pages/boundaries/error-boundary";
+import { FoodDetails } from "./pages/foods/food-details";
+import { MealDetails } from "./pages/foods/meal-details";
+import { FoodMealTab } from "./pages/foods/food-meal-tab";
+import { Meals } from "./pages/foods/meals";
 
 export const router = createBrowserRouter([
   {
@@ -21,8 +25,25 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/foods",
-        element: <Foods />,
+        element: <FoodMealTab />,
+        children: [
+          {
+            path: "/foods",
+            element: <Foods />,
+          },
+          {
+            path: "/foods/:foodId",
+            element: <FoodDetails />,
+          },
+          {
+            path: "meals",
+            element: <Meals />,
+          },
+          {
+            path: "/meals/:mealId",
+            element: <MealDetails />,
+          },
+        ],
       },
       {
         path: "/body",

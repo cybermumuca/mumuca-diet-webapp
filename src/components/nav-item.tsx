@@ -5,6 +5,7 @@ interface NavItemProps {
   icon: React.ReactNode;
 }
 
+// TODO: When the route is /meals, the NavItem does not highlight
 export function NavItem({ to, icon }: NavItemProps) {
   const location = useLocation();
   const isActive = location.pathname === to;
