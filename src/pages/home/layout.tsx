@@ -2,12 +2,16 @@ import { api } from "@/lib/axios";
 import { Home, Utensils, Activity } from "lucide-react";
 import { isAxiosError } from "axios";
 import { useLayoutEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavItem } from "@/components/nav-item";
 
 export function AppLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isFoodPageActive =
+    location.pathname.startsWith("/foods") ||
+    location.pathname.startsWith("/meals");
 
   useLayoutEffect(() => {
     const interceptorId = api.interceptors.response.use(
@@ -40,7 +44,11 @@ export function AppLayout() {
       <nav className="fixed bottom-0 left-0 right-0 bg-background border-t">
         <div className="flex justify-around items-center h-16">
           <NavItem to="/" icon={<Home className="w-6 h-6" />} />
-          <NavItem to="/foods" icon={<Utensils className="w-6 h-6" />} />
+          <NavItem
+            to="/foods"
+            icon={<Utensils className="w-6 h-6" />}
+            isActive={isFoodPageActive}
+          />
           <NavItem to="/body" icon={<Activity className="w-6 h-6" />} />
           <NavItem
             to="/profile"
