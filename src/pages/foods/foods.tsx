@@ -20,7 +20,7 @@ import { Plus } from "lucide-react";
 export function Foods() {
   const navigate = useNavigate();
   const observerTarget = useRef(null);
-  const [sortOrder, setSortOrder] = useState<SortOrder>("ASC");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
   const {
     data: foodsData,
@@ -89,8 +89,8 @@ export function Foods() {
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Ordem</SelectLabel>
-              <SelectItem value="ASC">Crescente</SelectItem>
-              <SelectItem value="DESC">Decrescente</SelectItem>
+              <SelectItem value="asc">Crescente</SelectItem>
+              <SelectItem value="desc">Decrescente</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -121,11 +121,12 @@ export function Foods() {
               {page.content.map((food) => (
                 <FoodCard
                   key={food.id}
-                  id={food.id}
                   title={food.title}
-                  brand={food.brand ?? undefined}
+                  brand={food.brand}
+                  amount={food.portion.amount}
+                  unit={food.portion.unit}
                   calories={food.nutritionalInformation.calories}
-                  onClick={openFoodDetails}
+                  onClick={() => openFoodDetails(food.id)}
                 />
               ))}
             </div>
@@ -139,11 +140,12 @@ export function Foods() {
           )}
           {!hasNextPage &&
             foodsData &&
+            foodsData.pages[0].page.totalElements >= 10 &&
             foodsData.pages[0].content.length > 0 && (
-              <div className="text-center text-muted-foreground mt-4">
-                No more items to load
-              </div>
-            )}
+                <div className="text-center text-muted-foreground text-sm mt-4">
+                  Não há mais itens para carregar
+                </div>
+              )}
           <div ref={observerTarget} />
         </>
       )}

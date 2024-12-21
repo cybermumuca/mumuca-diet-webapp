@@ -3,7 +3,7 @@ import { Food } from "@/types/food";
 import { Pagination } from "@/types/api";
 
 export interface ListFoodsQuery {
-  sort?: string;
+  sort?: "asc" | "desc";
   size?: number;
   page?: number;
 }
@@ -13,12 +13,16 @@ export interface ListFoodsResponse {
   page: Pagination;
 }
 
-export async function listFoods(query: ListFoodsQuery = {}): Promise<ListFoodsResponse> {
-  const { sort = "title", size = 10, page = 0 } = query;
+export async function listFoods(
+  query: ListFoodsQuery = {}
+): Promise<ListFoodsResponse> {
+  const { sort = "title,asc", size = 10, page = 0 } = query;
+
+  const sortOrder = sort.toLowerCase() === "desc" ? "title,desc" : sort;
 
   const response = await api.get<ListFoodsResponse>("/v1/foods", {
     params: {
-      sort,
+      sort: sortOrder,
       size,
       page,
     },
