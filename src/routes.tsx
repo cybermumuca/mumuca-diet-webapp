@@ -57,6 +57,10 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: "/foods/add",
+    element: <AddFood />,
+  },
+  {
     path: "/",
     element: <AuthLayout />,
     children: [
@@ -69,10 +73,6 @@ export const router = createBrowserRouter([
         element: <SignUp />,
       },
     ],
-  },
-  {
-    path: "/foods/add",
-    element: <AddFood />,
   },
   {
     path: "*",

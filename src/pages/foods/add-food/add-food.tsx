@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -15,6 +15,8 @@ import { FoodNutritionalInformationStep } from "./food-nutritional-information-s
 import { Button } from "@/components/ui/button";
 import { ProgressIndicator } from "@/components/progress-indicator";
 import { ChevronLeftIcon, Loader2 } from "lucide-react";
+import { api } from "@/lib/axios";
+import { isAxiosError } from "axios";
 
 type Step = "basicInfo" | "portions" | "nutritionalInfo";
 
@@ -26,7 +28,7 @@ const createFoodSchema = z.object({
   description: z.string().optional(),
   portion: z.object({
     amount: z.number({ coerce: true, message: "Deve ser um inteiro positivo" }).positive("A quantidade deve ser maior que zero").default(0),
-    unity: z.string({ message: "Escolha uma unidade" }).nonempty("A unidade é obrigatória"),
+    unit: z.enum(["GRAM", "MILLIGRAM", "KILOGRAM", "MICROGRAM", "MILLILITER", "LITER", "CALORIE", "KILOJOULE", "INTERNATIONAL_UNIT", "OUNCE", "CUP", "TABLESPOON", "TEASPOON", "SLICE", "PIECE", "BOWL"], { message: "Unidade inválida" }),
     description: z.string().optional(),
   }),
   nutritionalInformation: z.object({
@@ -70,9 +72,9 @@ export function AddFood() {
     name: "portion.amount",
   });
 
-  const watchedPortionUnity = useWatch({
+  const watchedPortionUnit = useWatch({
     control: methods.control,
-    name: "portion.unity",
+    name: "portion.unit",
   });
 
   useEffect(() => {
@@ -84,8 +86,31 @@ export function AddFood() {
   }, [watchedPortionAmount, methods]);
 
   useEffect(() => {
-    methods.clearErrors("portion.unity");
-  }, [watchedPortionUnity, methods]);
+    methods.clearErrors("portion.unit");
+  }, [watchedPortionUnit, methods]);
+
+  useLayoutEffect(() => {
+    const interceptorId = api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (isAxiosError(error)) {
+          const status = error.response?.status;
+
+          if (status === 401) {
+            navigate("/sign-in", {
+              replace: true,
+            });
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      api.interceptors.response.eject(interceptorId);
+    };
+  }, [navigate]);
 
   const { mutateAsync: addFood } = useMutation({
     mutationFn: createFood,
@@ -101,7 +126,7 @@ export function AddFood() {
       step === "basicInfo"
         ? (["title", "brand", "description"] as const)
         : step === "portions"
-        ? (["portion.amount", "portion.unity", "portion.description"] as const)
+        ? (["portion.amount", "portion.unit", "portion.description"] as const)
         : step === "nutritionalInfo"
         ? (
             Object.keys(

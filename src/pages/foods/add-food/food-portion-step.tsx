@@ -11,22 +11,22 @@ import { Controller, useFormContext } from "react-hook-form";
 import { CreateFoodSchema } from "./add-food";
 
 const unitTypeOptions = [
-  { value: "g", label: "Gramas" },
-  { value: "mg", label: "Miligramas" },
-  { value: "kg", label: "Quilogramas" },
-  { value: "mcg", label: "Microgramas" },
-  { value: "ml", label: "Mililitros" },
-  { value: "l", label: "Litros" },
-  { value: "kcal", label: "Calorias (kcal)" },
-  { value: "kj", label: "Quilojoules (kJ)" },
-  { value: "iu", label: "Unidades Internacionais (IU)" },
-  { value: "oz", label: "Onças (oz)" },
-  { value: "cup", label: "Xícaras" },
-  { value: "tbsp", label: "Colheres de Sopa" },
-  { value: "tsp", label: "Colheres de Chá" },
-  { value: "slice", label: "Fatias" },
-  { value: "piece", label: "Peças" },
-  { value: "bowl", label: "Tigelas" },
+  { value: "GRAM", label: "Gramas" },
+  { value: "MILLIGRAM", label: "Miligramas" },
+  { value: "KILOGRAM", label: "Quilogramas" },
+  { value: "MICROGRAM", label: "Microgramas" },
+  { value: "MILLILITER", label: "Mililitros" },
+  { value: "LITER", label: "Litros" },
+  { value: "CALORIE", label: "Calorias (kcal)" },
+  { value: "KILOJOULE", label: "Quilojoules (kJ)" },
+  { value: "INTERNATIONAL_UNIT", label: "Unidades Internacionais (IU)" },
+  { value: "OUNCE", label: "Onças (oz)" },
+  { value: "CUP", label: "Xícaras" },
+  { value: "TABLESPOON", label: "Colheres de Sopa" },
+  { value: "TEASPOON", label: "Colheres de Chá" },
+  { value: "SLICE", label: "Fatias" },
+  { value: "PIECE", label: "Peças" },
+  { value: "BOWL", label: "Tigelas" },
 ];
 
 export function FoodPortionStep() {
@@ -58,18 +58,18 @@ export function FoodPortionStep() {
         )}
       </div>
       <div>
-        <Label htmlFor="unity" className="text-lg">
+        <Label htmlFor="unit" className="text-lg">
           Unidade
         </Label>
         <Controller
-          name="portion.unity"
+          name="portion.unit"
           control={control}
           render={({ field }) => (
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger
                 id="unity"
                 className={
-                  errors.portion?.unity
+                  errors.portion?.unit
                     ? "border-red-500 dark:border-red-700"
                     : ""
                 }
@@ -86,9 +86,9 @@ export function FoodPortionStep() {
             </Select>
           )}
         />
-        {errors.portion?.unity && (
+        {errors.portion?.unit && (
           <p className="text-red-500 dark:border-red-700 text-xs">
-            {errors.portion.unity.message}
+            {errors.portion.unit.message}
           </p>
         )}
       </div>

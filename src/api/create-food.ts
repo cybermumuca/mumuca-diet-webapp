@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { Food } from "@/types/food";
+import { Food, Unit } from "@/types/food";
 
 export interface CreateFoodNutritionalInformation {
   calories?: number;
@@ -20,11 +20,17 @@ export interface CreateFoodNutritionalInformation {
   vitaminA?: number;
   vitaminC?: number;
 }
+export interface CreateFoodPortion {
+  amount: number;
+  unit: Unit;
+  description?: string;
+}
 
 export interface CreateFoodBody {
   title: string;
   brand?: string;
   description?: string;
+  portion: CreateFoodPortion;
   nutritionalInformation: CreateFoodNutritionalInformation;
 }
 
