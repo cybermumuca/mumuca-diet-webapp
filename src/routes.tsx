@@ -13,6 +13,7 @@ import { FoodDetails } from "./pages/foods/food-details";
 import { MealDetails } from "./pages/foods/meal-details";
 import { FoodMealTab } from "./pages/foods/food-meal-tab";
 import { Meals } from "./pages/foods/meals";
+import { AddFood } from "./pages/foods/add-food/add-food";
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ export const router = createBrowserRouter([
         element: <SignUp />,
       },
     ],
+  },
+  {
+    path: "/foods/add",
+    element: <AddFood />,
   },
   {
     path: "*",
