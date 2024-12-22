@@ -1,34 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
-import { getFood } from "@/api/get-food";
+import { useNavigate, useParams } from "react-router";
+import { FoodInfo } from "./components/food-info";
+import { FoodMeals } from "./components/food-meals";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { ChevronLeftIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { FoodNotFoundError } from "./errors/food-not-found-error";
 
 export function FoodDetails() {
-  const { foodId } = useParams();
+  const navigate = useNavigate();
+  const { foodId } = useParams<{ foodId: string }>();
 
-  const { data: food } = useQuery({
-    queryKey: ["food", foodId],
-    queryFn: () => getFood({ foodId: foodId! }),
-    enabled: !!foodId,
-  });
+  if (!foodId || !z.string().uuid().safeParse(foodId).success) {
+    throw new FoodNotFoundError();
+  }
 
-  if (!food) return null;
+  function handleBackToFoodsPage() {
+    navigate("/foods");
+  }
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">{food.title}</h1>
-      {food.brand && <p className="text-muted-foreground">{food.brand}</p>}
-      {food.description && <p>{food.description}</p>}
-      
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold">Informação Nutricional</h2>
-        <div className="space-y-1">
-          {Object.entries(food.nutritionalInformation).map(([key, value]) => (
-            <div key={key} className="flex justify-between">
-              <span className="capitalize">{key}</span>
-              <span>{value}</span>
-            </div>
-          ))}
-        </div>
+    <div className="container mx-auto px-8 py-6 max-w-2xl">
+      <div className="flex items-center justify-start gap-2 mb-4">
+        <Button
+          type="button"
+          className="hover:bg-transparent"
+          onClick={handleBackToFoodsPage}
+          variant="ghost"
+          size="icon"
+        >
+          <ChevronLeftIcon className="translate-y-[2px]" />
+        </Button>
+        <h1 className="text-2xl font-bold">Visualizar Comida</h1>
+      </div>
+      <Separator className="my-4 bg-muted-foreground" />
+      <FoodInfo foodId={foodId} />
+      <div className="mt-6">
+        <FoodMeals foodId={foodId} />
       </div>
     </div>
   );

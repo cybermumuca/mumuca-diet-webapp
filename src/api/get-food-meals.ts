@@ -7,8 +7,8 @@ export interface GetFoodMealsQuery {
 
 export async function getFoodMeals({
   foodId,
-}: GetFoodMealsQuery): Promise<Meal> {
-  const response = await api.get<Meal>(`/v1/foods/${foodId}/meals`);
+}: GetFoodMealsQuery): Promise<Meal[]> {
+  const response = await api.get<Meal[]>(`/v1/foods/${foodId}/meals`);
 
   return response.data;
 }

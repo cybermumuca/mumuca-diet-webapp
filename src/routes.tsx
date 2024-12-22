@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, RouteObject } from "react-router";
 import { SignIn } from "./pages/auth/sign-in";
 import { SignUp } from "./pages/auth/sign-up";
 import { AuthLayout } from "./pages/auth/layout";
@@ -14,6 +14,23 @@ import { MealDetails } from "./pages/foods/meal-details";
 import { FoodMealTab } from "./pages/foods/food-meal-tab";
 import { Meals } from "./pages/foods/meals";
 import { AddFood } from "./pages/foods/add-food/add-food";
+import { FoodNotFound } from "./pages/foods/food-not-found";
+
+const authRoutes: RouteObject = {
+  path: "/",
+  element: <AuthLayout />,
+  children: [
+    {
+      index: true,
+      path: "/sign-in",
+      element: <SignIn />,
+    },
+    {
+      path: "/sign-up",
+      element: <SignUp />,
+    },
+  ],
+};
 
 export const router = createBrowserRouter([
   {
@@ -32,10 +49,7 @@ export const router = createBrowserRouter([
             path: "/foods",
             element: <Foods />,
           },
-          {
-            path: "/foods/:foodId",
-            element: <FoodDetails />,
-          },
+
           {
             path: "meals",
             element: <Meals />,
@@ -61,19 +75,11 @@ export const router = createBrowserRouter([
     element: <AddFood />,
   },
   {
-    path: "/",
-    element: <AuthLayout />,
-    children: [
-      {
-        path: "/sign-in",
-        element: <SignIn />,
-      },
-      {
-        path: "/sign-up",
-        element: <SignUp />,
-      },
-    ],
+    path: "/foods/:foodId",
+    errorElement: <FoodNotFound />,
+    element: <FoodDetails />,
   },
+  authRoutes,
   {
     path: "*",
     element: <NotFound />,
