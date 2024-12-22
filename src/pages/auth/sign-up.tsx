@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 const signUpSchema = z.object({
   firstName: z.string().min(1, "O Nome é obrigatório"),
@@ -64,6 +65,19 @@ export function SignUp() {
       });
     } catch (error) {
       console.log(error);
+
+      if (isAxiosError(error) && error.response?.status === 409) {
+        setError("email", {
+          message: "Email já cadastrado",
+        });
+
+        toast.error("Erro ao criar conta", {
+          description: "Email já cadastrado",
+        });
+
+        return;
+      }
+
       if (isAxiosError(error) && error.response?.status === 400) {
         const details = error.response.data.details;
 
@@ -78,9 +92,9 @@ export function SignUp() {
         toast.error("Erro de validação", {
           description: errorMessages,
         });
-      } else {
-        toast.error("Erro ao criar conta");
       }
+
+      toast.error("Erro ao criar conta");
     }
   }
 
@@ -91,7 +105,9 @@ export function SignUp() {
         .join("<br />");
 
       toast.error("Erro de validação", {
-        description: <span dangerouslySetInnerHTML={{ __html: errorMessages }} />,
+        description: (
+          <span dangerouslySetInnerHTML={{ __html: errorMessages }} />
+        ),
         closeButton: true,
         duration: 10000,
       });
@@ -155,7 +171,14 @@ export function SignUp() {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                Criar conta
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Cadastrando...
+                  </>
+                ) : (
+                  "Cadastrar"
+                )}
               </Button>
               <Button variant="outline" className="w-full" disabled>
                 Entrar com Google

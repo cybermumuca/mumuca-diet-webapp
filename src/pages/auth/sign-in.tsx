@@ -1,4 +1,4 @@
-import { signIn } from "@/api/sign-in";
+import { signIn, SignInRequest } from "@/api/sign-in";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,22 +9,20 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 import { Helmet } from "react-helmet-async";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Link, useSearchParams } from "react-router";
 import { toast } from "sonner";
-import { z } from "zod";
 
-const signInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-type SignInSchema = z.infer<typeof signInSchema>;
+type SignInSchema = {
+  email: string;
+  password: string;
+};
 
 export function SignIn() {
   const [searchParams] = useSearchParams();
@@ -32,9 +30,11 @@ export function SignIn() {
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
+    control,
     formState: { isSubmitting, errors },
   } = useForm<SignInSchema>({
-    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: searchParams.get("hint") ?? "",
     },
@@ -44,21 +44,38 @@ export function SignIn() {
     mutationFn: signIn,
   });
 
-  async function handleAuthenticate({ email, password }: SignInSchema) {
+  async function handleAuthenticate({ email, password }: SignInRequest) {
     try {
       await authenticate({ email, password });
-    } catch {
-      toast.error("Credenciais inválidas");
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        setError("email", {});
+        setError("password", {});
+
+        toast.error("Credenciais inválidas");
+
+        return;
+      }
+
+      toast.error("Erro ao entrar", {
+        description: "Tente novamente mais tarde",
+      });
     }
   }
 
+  const watchedEmail = useWatch({
+    control: control,
+    name: "email",
+  });
+
+  const watchedPassword = useWatch({
+    control: control,
+    name: "password",
+  });
+
   useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      setTimeout(() => {
-        toast.error("Credenciais inválidas");
-      }, 1000);
-    }
-  }, [errors]);
+    clearErrors(["email", "password"]);
+  }, [clearErrors, watchedEmail, watchedPassword]);
 
   return (
     <>
@@ -79,6 +96,7 @@ export function SignIn() {
                   autoCapitalize="none"
                   autoComplete="email"
                   autoCorrect="off"
+                  className={errors.email ? "border-red-500" : ""}
                   {...register("email")}
                 />
               </div>
@@ -95,11 +113,12 @@ export function SignIn() {
                 <Input
                   id="password"
                   type="password"
+                  className={errors.password ? "border-red-500" : ""}
                   {...register("password")}
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                Entrar
+                {isSubmitting ? <Loader2 className="animate-spin" /> : "Entrar"}
               </Button>
               <Button variant="outline" className="w-full" disabled>
                 Entrar com Google
