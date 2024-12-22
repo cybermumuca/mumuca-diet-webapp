@@ -2,14 +2,16 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { Outlet, useNavigate, useSearchParams } from "react-router";
+import { Outlet, useNavigate, useSearchParams, useLocation } from "react-router";
 
 export type FoodsOrMealsUnion = "foods" | "meals";
 
 export function FoodMealTab() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [value, setValue] = useState<FoodsOrMealsUnion>("foods");
+  const location = useLocation();
   const navigate = useNavigate();
+  const initialValue = location.pathname.includes("meals") ? "meals" : "foods";
+  const [value, setValue] = useState<FoodsOrMealsUnion>(initialValue);
 
   function handleTabChange(value: string) {
     setValue(value as FoodsOrMealsUnion);
