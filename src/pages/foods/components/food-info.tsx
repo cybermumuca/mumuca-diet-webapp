@@ -19,6 +19,7 @@ export function FoodInfo({ foodId }: FoodInfoProps) {
     queryKey: ["food", foodId],
     queryFn: () => getFood({ foodId }),
     staleTime: 1000 * 60 * 15,
+    retry: false,
   });
 
   if (isFetchingFood) {
