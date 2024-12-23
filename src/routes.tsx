@@ -15,6 +15,7 @@ import { FoodMealTab } from "./pages/foods/food-meal-tab";
 import { Meals } from "./pages/foods/meals";
 import { AddFood } from "./pages/foods/add-food/add-food";
 import { FoodNotFound } from "./pages/foods/food-not-found";
+import { AddMeal } from "./pages/foods/add-meal/add-meal";
 
 const authRoutes: RouteObject = {
   path: "/",
@@ -49,7 +50,6 @@ export const router = createBrowserRouter([
             path: "/foods",
             element: <Foods />,
           },
-
           {
             path: "meals",
             element: <Meals />,
@@ -78,6 +78,10 @@ export const router = createBrowserRouter([
     path: "/foods/:foodId",
     errorElement: <FoodNotFound />,
     element: <FoodDetails />,
+  },
+  {
+    path: "/meals/add",
+    element: <AddMeal />,
   },
   authRoutes,
   {
