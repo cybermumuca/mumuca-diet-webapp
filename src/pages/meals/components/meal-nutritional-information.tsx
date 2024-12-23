@@ -18,7 +18,28 @@ export function MealNutritionalInformation({
     error,
   } = useQuery({
     queryKey: ["mealNutritionalInformation", mealId],
-    queryFn: () => getMealNutritionalInformation({ mealId }),
+    queryFn: async () => {
+      const data = await getMealNutritionalInformation({ mealId });
+      return data || {
+        calories: 0,
+        carbohydrates: 0,
+        protein: 0,
+        fat: 0,
+        fiber: 0,
+        sugar: 0,
+        sodium: 0,
+        potassium: 0,
+        cholesterol: 0,
+        calcium: 0,
+        iron: 0,
+        vitaminA: 0,
+        vitaminC: 0,
+        saturatedFat: 0,
+        monounsaturatedFat: 0,
+        polyunsaturatedFat: 0,
+        transFat: 0,
+      };
+    },
     staleTime: 1000 * 60 * 15,
     retry: false,
   });
