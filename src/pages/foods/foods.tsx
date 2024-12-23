@@ -38,7 +38,9 @@ export function Foods() {
       return nextPage < lastPage.page.totalPages ? nextPage : undefined;
     },
     refetchOnWindowFocus: true,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 1000 * 60 * 15,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: true,
   });
 
   const handleObserver = useCallback(
@@ -142,10 +144,10 @@ export function Foods() {
             foodsData &&
             foodsData.pages[0].page.totalElements >= 10 &&
             foodsData.pages[0].content.length > 0 && (
-                <div className="text-center text-muted-foreground text-sm mt-4">
-                  Não há mais itens para carregar
-                </div>
-              )}
+              <div className="text-center text-muted-foreground text-sm mt-4">
+                Não há mais itens para carregar
+              </div>
+            )}
           <div ref={observerTarget} />
         </>
       )}

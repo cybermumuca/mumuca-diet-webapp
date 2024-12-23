@@ -39,7 +39,9 @@ export function Meals() {
       return nextPage < lastPage.page.totalPages ? nextPage : undefined;
     },
     refetchOnWindowFocus: true,
-    staleTime: 1000 * 60 * 1,
+    staleTime: 1000 * 60 * 15,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: true,
   });
 
   function openMealDetails(id: string) {
