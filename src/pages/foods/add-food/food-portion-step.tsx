@@ -67,7 +67,7 @@ export function FoodPortionStep() {
           render={({ field }) => (
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger
-                id="unity"
+                id="unit"
                 className={
                   errors.portion?.unit
                     ? "border-red-500 dark:border-red-700"
