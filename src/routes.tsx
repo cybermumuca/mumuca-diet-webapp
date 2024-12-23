@@ -10,13 +10,13 @@ import { Profile } from "./pages/profile/profile";
 import { NotFound } from "./pages/boundaries/not-found";
 import { ErrorBoundary } from "./pages/boundaries/error-boundary";
 import { FoodDetails } from "./pages/foods/food-details";
-import { MealDetails } from "./pages/foods/meal-details";
-import { FoodMealTab } from "./pages/foods/food-meal-tab";
-import { Meals } from "./pages/foods/meals";
+import { MealDetails } from "./pages/meals/meal-details";
+import { FoodMealTab } from "./pages/shared/food-meal-tab";
+import { Meals } from "./pages/meals/meals";
 import { AddFood } from "./pages/foods/add-food/add-food";
 import { FoodNotFound } from "./pages/foods/food-not-found";
-import { AddMeal } from "./pages/foods/add-meal/add-meal";
-import { MealNotFound } from "./pages/foods/meal-not-found";
+import { AddMeal } from "./pages/meals/add-meal/add-meal";
+import { MealNotFound } from "./pages/meals/meal-not-found";
 
 const authRoutes: RouteObject = {
   path: "/",

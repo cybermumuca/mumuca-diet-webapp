@@ -2,7 +2,7 @@ import { getFoodMeals } from "@/api/get-food-meals";
 import { Meal } from "@/types/meal";
 import { useQuery } from "@tanstack/react-query";
 import { FoodMealsSkeleton } from "./food-meals-skeleton";
-import { MealCard } from "./meal-card";
+import { MealCard } from "../../meals/components/meal-card";
 import { useNavigate } from "react-router";
 
 interface FoodMealsProps {

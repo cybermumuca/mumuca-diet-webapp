@@ -10,7 +10,7 @@ export function MealNotFound() {
   function goToMealsPage() {
     navigate("/meals", {
       replace: true,
-    }); 
+    });
   }
 
   if (error instanceof MealNotFoundError) {

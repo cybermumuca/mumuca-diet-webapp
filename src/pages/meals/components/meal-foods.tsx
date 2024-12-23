@@ -2,7 +2,7 @@ import { getMeal } from "@/api/get-meal";
 import { useQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { MealNotFoundError } from "../errors/meal-not-found-error";
-import { FoodCard } from "./food-card";
+import { FoodCard } from "../../foods/components/food-card";
 import { useNavigate } from "react-router";
 import { MealFoodsSkeleton } from "./meal-foods-skeleton";
 

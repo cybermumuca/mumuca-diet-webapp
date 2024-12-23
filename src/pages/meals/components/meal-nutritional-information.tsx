@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { NutritionItem } from "./nutrition-item";
+import { NutritionItem } from "../../shared/components/nutrition-item";
 import { getMealNutritionalInformation } from "@/api/get-meal-nutritional-information";
 import { isAxiosError } from "axios";
 import { MealNotFoundError } from "../errors/meal-not-found-error";

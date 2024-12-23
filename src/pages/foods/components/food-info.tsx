@@ -1,7 +1,7 @@
 import { getFood } from "@/api/get-food";
 import { useQuery } from "@tanstack/react-query";
 import { getUnitLabel } from "@/utils/get-unit-label";
-import { NutritionItem } from "./nutrition-item";
+import { NutritionItem } from "../../shared/components/nutrition-item";
 import { FoodInfoSkeleton } from "./food-info-skeleton";
 import { FoodNotFoundError } from "../errors/food-not-found-error";
 import { isAxiosError } from "axios";

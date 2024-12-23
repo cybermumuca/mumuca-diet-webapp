@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { CreateMealSchema } from "./add-meal";
 import { Label } from "@/components/ui/label";
-import { FoodCard } from "../components/food-card";
-import { FoodCardSkeleton } from "../components/food-card-skeleton";
+import { FoodCardSkeleton } from "@/pages/foods/components/food-card-skeleton";
+import { FoodCard } from "@/pages/foods/components/food-card";
 
 export function MealAddFoodsStep() {
   const { setValue } = useFormContext<CreateMealSchema>();
