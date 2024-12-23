@@ -14,11 +14,13 @@ export interface ListMealsResponse {
 }
 
 export async function listMeals(query: ListMealsQuery = {}): Promise<ListMealsResponse> {
-  const { sort = "title", size = 20, page = 0 } = query;
+  const { sort = "title,asc", size = 10, page = 0 } = query;
+
+  const sortOrder = sort.toLowerCase() === "desc" ? "title,desc" : sort;
 
   const response = await api.get<ListMealsResponse>("/v1/meals", {
     params: {
-      sort,
+      sort: sortOrder,
       size,
       page,
     },
