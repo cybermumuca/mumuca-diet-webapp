@@ -24,7 +24,7 @@ export function FoodMeals({ foodId }: FoodMealsProps) {
   }
 
   function openMealDetails(mealId: string) {
-    navigate(`/meals/${mealId}`);
+    navigate(`/meals/${mealId}`, { state: { backUrl: `/foods/${foodId}` } });
   }
 
   return (

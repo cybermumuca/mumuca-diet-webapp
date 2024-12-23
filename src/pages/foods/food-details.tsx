@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { FoodInfo } from "./components/food-info";
 import { FoodMeals } from "./components/food-meals";
 import { z } from "zod";
@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { FoodNotFoundError } from "./errors/food-not-found-error";
 
 export function FoodDetails() {
+  const location = useLocation();
+  const backUrl: string = location.state?.backUrl ?? "/foods";
   const navigate = useNavigate();
   const { foodId } = useParams<{ foodId: string }>();
 
@@ -15,8 +17,8 @@ export function FoodDetails() {
     throw new FoodNotFoundError();
   }
 
-  function handleBackToFoodsPage() {
-    navigate("/foods");
+  function handleBack() {
+    navigate(backUrl);
   }
 
   return (
@@ -25,7 +27,7 @@ export function FoodDetails() {
         <Button
           type="button"
           className="hover:bg-transparent"
-          onClick={handleBackToFoodsPage}
+          onClick={handleBack}
           variant="ghost"
           size="icon"
         >
