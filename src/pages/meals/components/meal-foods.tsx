@@ -43,7 +43,7 @@ export function MealFoods({ mealId }: MealFoodsProps) {
       <h1 className="text-xl font-semibold">Comidas inclusas nessa Refeição</h1>
       {meal && meal.foods.length === 0 && (
         <p className="text-muted-foreground text-sm">
-          Nenhuma refeição encontrada.
+          Nenhuma comida encontrada.
         </p>
       )}
       {meal &&
