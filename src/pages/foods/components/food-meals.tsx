@@ -43,6 +43,7 @@ export function FoodMeals({ foodId }: FoodMealsProps) {
             onClick={() => openMealDetails(meal.id)}
             title={meal.title}
             type={meal.type}
+            className="mt-2"
           />
         ))}
     </div>
