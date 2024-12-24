@@ -25,33 +25,33 @@ const authRoutes: RouteObject = {
   element: <AuthLayout />,
   children: [
     { path: "/sign-in", element: <SignIn /> },
-    { path: "/sign-up", element: <SignUp /> }
-  ]
+    { path: "/sign-up", element: <SignUp /> },
+  ],
 };
 
 // Food routes
 const foodRoutes: RouteObject[] = [
   { path: "/foods/add", element: <AddFood /> },
-  { 
-    path: "/foods/:foodId", 
+  {
+    path: "/foods/:foodId",
     errorElement: <FoodNotFound />,
-    element: <FoodDetails /> 
+    element: <FoodDetails />,
   },
   {
     path: "/foods/:foodId/edit",
     errorElement: <FoodNotFound />,
-    element: <EditFood />
-  }
+    element: <EditFood />,
+  },
 ];
 
-// Meal routes  
+// Meal routes
 const mealRoutes: RouteObject[] = [
   { path: "/meals/add", element: <AddMeal /> },
   {
     path: "/meals/:mealId",
     errorElement: <MealNotFound />,
-    element: <MealDetails />
-  }
+    element: <MealDetails />,
+  },
 ];
 
 // Main routes
@@ -65,18 +65,18 @@ const mainRoutes: RouteObject = {
       element: <FoodMealTab />,
       children: [
         { path: "/foods", element: <Foods /> },
-        { path: "/meals", element: <Meals /> }
-      ]
+        { path: "/meals", element: <Meals /> },
+      ],
     },
     { path: "/body", element: <Body /> },
-    { path: "/profile", element: <Profile /> }
-  ]
+    { path: "/profile", element: <Profile /> },
+  ],
 };
 
 export const router = createBrowserRouter([
   mainRoutes,
-  ...foodRoutes,  
+  ...foodRoutes,
   ...mealRoutes,
   authRoutes,
-  { path: "*", element: <NotFound /> }
+  { path: "*", element: <NotFound /> },
 ]);
