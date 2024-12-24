@@ -17,6 +17,7 @@ import { AddFood } from "./pages/foods/add-food/add-food";
 import { FoodNotFound } from "./pages/foods/food-not-found";
 import { AddMeal } from "./pages/meals/add-meal/add-meal";
 import { MealNotFound } from "./pages/meals/meal-not-found";
+import { EditFood } from "./pages/foods/edit-food/edit-food";
 
 const authRoutes: RouteObject = {
   path: "/",
@@ -75,6 +76,11 @@ export const router = createBrowserRouter([
     path: "/foods/:foodId",
     errorElement: <FoodNotFound />,
     element: <FoodDetails />,
+  },
+  {
+    path: "/foods/:foodId/edit",
+    errorElement: <FoodNotFound />,
+    element: <EditFood />,
   },
   {
     path: "/meals/:mealId",

@@ -1,38 +1,64 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "motion/react";
 
-import { createFood } from "@/api/create-food";
 import { queryClient } from "@/lib/react-query";
-import { FoodBasicInformationStep } from "./food-basic-information-step";
-import { FoodPortionStep } from "./food-portion-step";
-import { FoodNutritionalInformationStep } from "./food-nutritional-information-step";
 import { Button } from "@/components/ui/button";
 import { ProgressIndicator } from "@/components/progress-indicator";
 import { ChevronLeftIcon, Loader2 } from "lucide-react";
 import { api } from "@/lib/axios";
 import { isAxiosError } from "axios";
+import { getFood } from "@/api/get-food";
+import { FoodNotFoundError } from "../errors/food-not-found-error";
+import { updateFood } from "@/api/update-food";
+import { FoodBasicInformationStep } from "../add-food/food-basic-information-step";
+import { FoodPortionStep } from "../add-food/food-portion-step";
+import { FoodNutritionalInformationStep } from "../add-food/food-nutritional-information-step";
+import { Food } from "@/types/food";
 
 type Step = "basicInfo" | "portions" | "nutritionalInfo";
 
 const steps: Step[] = ["basicInfo", "portions", "nutritionalInfo"];
 
-const createFoodSchema = z.object({
+const editFoodSchema = z.object({
   title: z.string().nonempty("Nome é obrigatório"),
   brand: z.string().optional(),
   description: z.string().optional(),
   portion: z.object({
-    amount: z.number({ coerce: true, message: "Deve ser um inteiro positivo" }).positive("A quantidade deve ser maior que zero").default(0),
-    unit: z.enum(["GRAM", "MILLIGRAM", "KILOGRAM", "MICROGRAM", "MILLILITER", "LITER", "CALORIE", "KILOJOULE", "INTERNATIONAL_UNIT", "OUNCE", "CUP", "TABLESPOON", "TEASPOON", "SLICE", "PIECE", "BOWL"], { message: "Unidade inválida" }),
+    amount: z
+      .number({ coerce: true, message: "Deve ser um inteiro positivo" })
+      .positive("A quantidade deve ser maior que zero")
+      .default(0),
+    unit: z.enum(
+      [
+        "GRAM",
+        "MILLIGRAM",
+        "KILOGRAM",
+        "MICROGRAM",
+        "MILLILITER",
+        "LITER",
+        "CALORIE",
+        "KILOJOULE",
+        "INTERNATIONAL_UNIT",
+        "OUNCE",
+        "CUP",
+        "TABLESPOON",
+        "TEASPOON",
+        "SLICE",
+        "PIECE",
+        "BOWL",
+      ],
+      { message: "Unidade inválida" }
+    ),
     description: z.string().optional(),
   }),
   nutritionalInformation: z.object({
-    calories: z.number({ coerce: true }).default(0).optional(),
+    calories: z.number({ coerce: true }).int().default(0).optional(),
     carbohydrates: z.number({ coerce: true }).default(0).optional(),
     protein: z.number({ coerce: true }).default(0).optional(),
     fat: z.number({ coerce: true }).default(0).optional(),
@@ -52,15 +78,63 @@ const createFoodSchema = z.object({
   }),
 });
 
-export type CreateFoodSchema = z.infer<typeof createFoodSchema>;
+export type EditFoodSchema = z.infer<typeof editFoodSchema>;
 
-export function AddFood() {
+export function EditFood() {
   const navigate = useNavigate();
+  const { foodId } = useParams<{ foodId: string }>();
+  const location = useLocation();
+  const backUrl: string = location.state?.backUrl ?? "/foods";
   const [step, setStep] = useState<Step>("basicInfo");
 
-  const methods = useForm<CreateFoodSchema>({
-    resolver: zodResolver(createFoodSchema),
+  if (!foodId) {
+    throw new FoodNotFoundError();
+  }
+
+  const {
+    data: food,
+    isFetching: isFetchingFood,
+    error,
+  } = useQuery({
+    queryKey: ["food", foodId],
+    queryFn: () => getFood({ foodId }),
   });
+
+  const methods = useForm<EditFoodSchema>({
+    resolver: zodResolver(editFoodSchema),
+    defaultValues: food
+      ? {
+          title: food.title,
+          brand: food.brand ?? undefined,
+          description: food.description ?? undefined,
+          portion: {
+            amount: food.portion.amount,
+            unit: food.portion.unit,
+            description: food.portion.description ?? undefined,
+          },
+          nutritionalInformation: {
+            ...food.nutritionalInformation,
+          },
+        }
+      : {},
+  });
+
+  useEffect(() => {
+    if (food) {
+      methods.reset({
+        ...food,
+        brand: food.brand ?? undefined,
+        description: food.description ?? undefined,
+        portion: {
+          ...food.portion,
+          description: food.portion.description ?? undefined,
+        },
+        nutritionalInformation: {
+          ...food.nutritionalInformation,
+        },
+      });
+    }
+  }, [food, methods]);
 
   const watchedTitle = useWatch({
     control: methods.control,
@@ -112,9 +186,25 @@ export function AddFood() {
     };
   }, [navigate]);
 
-  const { mutateAsync: addFood } = useMutation({
-    mutationFn: createFood,
-    onSuccess: () => {
+  const { mutateAsync: editFood, isPending: isEditingFood } = useMutation({
+    mutationFn: (food: EditFoodSchema) => {
+      return updateFood(foodId, food);
+    },
+    onSuccess: (updatedFood) => {
+      queryClient.setQueryData(["food", foodId], (oldFood: Food) => {
+        return {
+          ...oldFood,
+          ...updatedFood,
+          portion: {
+            ...oldFood.portion,
+            ...updatedFood.portion,
+          },
+          nutritionalInformation: {
+            ...oldFood.nutritionalInformation,
+            ...updatedFood.nutritionalInformation,
+          },
+        };
+      });
       queryClient.refetchQueries({ queryKey: ["foods"], active: true });
     },
   });
@@ -130,16 +220,26 @@ export function AddFood() {
         : step === "nutritionalInfo"
         ? (
             Object.keys(
-              createFoodSchema.shape.nutritionalInformation.shape
+              editFoodSchema.shape.nutritionalInformation.shape
             ) as Array<
-              keyof typeof createFoodSchema.shape.nutritionalInformation.shape
+              keyof typeof editFoodSchema.shape.nutritionalInformation.shape
             >
           ).map((key) => `nutritionalInformation.${key}` as const)
         : [];
 
     const isValid = await methods.trigger(fieldsToValidate);
 
-    if (isValid && currentIndex < steps.length - 1) {
+    if (!isValid) {
+      return;
+    }
+
+    if (step === "nutritionalInfo") {
+      const foodValues = methods.getValues();
+      handleEditFood(foodValues);
+      return;
+    }
+
+    if (currentIndex < steps.length - 1) {
       setStep(steps[currentIndex + 1]);
     }
   }
@@ -151,14 +251,14 @@ export function AddFood() {
       return setStep(steps[currentIndex - 1]);
     }
 
-    return navigate("/foods");
+    return navigate(backUrl);
   }
 
-  async function handleAddFood(food: CreateFoodSchema) {
+  async function handleEditFood(food: EditFoodSchema) {
     try {
-      const { id: foodId } = await addFood(food);
+      await editFood({ ...food });
 
-      toast.success("Comida adicionada com sucesso", {
+      toast.success("Comida editada com sucesso", {
         action: {
           label: "Visualizar",
           onClick: () => {
@@ -167,19 +267,35 @@ export function AddFood() {
         },
       });
 
-      navigate("/foods");
+      navigate(backUrl);
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao adicionar comida", {
+      toast.error("Erro ao editar comida", {
         description: "Tente novamente mais tarde.",
       });
     }
   }
 
+  if (isFetchingFood) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin w-10 h-10 text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !food) {
+    if (error && !isAxiosError(error)) {
+      throw error;
+    }
+
+    throw new FoodNotFoundError();
+  }
+
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(handleAddFood)}
+        onSubmit={methods.handleSubmit(handleEditFood)}
         className="max-w-2xl mx-auto min-h-screen p-6"
       >
         <div className="flex items-center justify-start gap-2 mb-4">
@@ -191,7 +307,7 @@ export function AddFood() {
           >
             <ChevronLeftIcon className="translate-y-[1px]" />
           </Button>
-          <h1 className="text-2xl font-bold">Adicionar Comida</h1>
+          <h1 className="text-2xl font-bold">Editar Comida</h1>
         </div>
         <ProgressIndicator
           currentStep={steps.indexOf(step) + 1}
@@ -212,29 +328,22 @@ export function AddFood() {
         </AnimatePresence>
 
         <div className="mt-6 flex justify-center">
-          {step !== "nutritionalInfo" ? (
-            <Button
-              type="button"
-              className="w-full font-semibold"
-              onClick={handleNextStep}
-            >
-              Avançar
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={methods.formState.isSubmitting}
-            >
-              {methods.formState.isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin" /> Adicionando...
-                </>
-              ) : (
-                "Adicionar comida"
-              )}
-            </Button>
-          )}
+          <Button
+            type="button"
+            className="w-full font-semibold"
+            onClick={handleNextStep}
+            disabled={isEditingFood}
+          >
+            {isEditingFood ? (
+              <>
+                <Loader2 className="animate-spin" /> Editando...
+              </>
+            ) : step === "nutritionalInfo" ? (
+              "Editar comida"
+            ) : (
+              "Avançar"
+            )}
+          </Button>
         </div>
       </form>
     </FormProvider>
