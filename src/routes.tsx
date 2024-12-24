@@ -19,81 +19,64 @@ import { AddMeal } from "./pages/meals/add-meal/add-meal";
 import { MealNotFound } from "./pages/meals/meal-not-found";
 import { EditFood } from "./pages/foods/edit-food/edit-food";
 
+// Auth routes
 const authRoutes: RouteObject = {
   path: "/",
   element: <AuthLayout />,
   children: [
-    {
-      index: true,
-      path: "/sign-in",
-      element: <SignIn />,
-    },
-    {
-      path: "/sign-up",
-      element: <SignUp />,
-    },
-  ],
+    { path: "/sign-in", element: <SignIn /> },
+    { path: "/sign-up", element: <SignUp /> }
+  ]
 };
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <AppLayout />,
-    errorElement: <ErrorBoundary />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        element: <FoodMealTab />,
-        children: [
-          {
-            path: "/foods",
-            element: <Foods />,
-          },
-          {
-            path: "/meals",
-            element: <Meals />,
-          },
-        ],
-      },
-      {
-        path: "/body",
-        element: <Body />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-    ],
-  },
-  {
-    path: "/foods/add",
-    element: <AddFood />,
-  },
-  {
-    path: "/foods/:foodId",
+// Food routes
+const foodRoutes: RouteObject[] = [
+  { path: "/foods/add", element: <AddFood /> },
+  { 
+    path: "/foods/:foodId", 
     errorElement: <FoodNotFound />,
-    element: <FoodDetails />,
+    element: <FoodDetails /> 
   },
   {
     path: "/foods/:foodId/edit",
     errorElement: <FoodNotFound />,
-    element: <EditFood />,
-  },
+    element: <EditFood />
+  }
+];
+
+// Meal routes  
+const mealRoutes: RouteObject[] = [
+  { path: "/meals/add", element: <AddMeal /> },
   {
     path: "/meals/:mealId",
     errorElement: <MealNotFound />,
-    element: <MealDetails />,
-  },
-  {
-    path: "/meals/add",
-    element: <AddMeal />,
-  },
+    element: <MealDetails />
+  }
+];
+
+// Main routes
+const mainRoutes: RouteObject = {
+  path: "/",
+  element: <AppLayout />,
+  errorElement: <ErrorBoundary />,
+  children: [
+    { index: true, element: <Home /> },
+    {
+      element: <FoodMealTab />,
+      children: [
+        { path: "/foods", element: <Foods /> },
+        { path: "/meals", element: <Meals /> }
+      ]
+    },
+    { path: "/body", element: <Body /> },
+    { path: "/profile", element: <Profile /> }
+  ]
+};
+
+export const router = createBrowserRouter([
+  mainRoutes,
+  ...foodRoutes,  
+  ...mealRoutes,
   authRoutes,
-  {
-    path: "*",
-    element: <NotFound />,
-  },
+  { path: "*", element: <NotFound /> }
 ]);
