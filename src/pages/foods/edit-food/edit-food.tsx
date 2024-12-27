@@ -98,6 +98,7 @@ export function EditFood() {
   } = useQuery({
     queryKey: ["food", foodId],
     queryFn: () => getFood({ foodId }),
+    retry: false,
   });
 
   const methods = useForm<EditFoodSchema>({
