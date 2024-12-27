@@ -8,24 +8,28 @@ import { FoodCardSkeleton } from "@/pages/foods/components/food-card-skeleton";
 import { FoodCard } from "@/pages/foods/components/food-card";
 
 export function MealAddFoodsStep() {
-  const { setValue } = useFormContext<CreateMealSchema>();
+  const {
+    setValue,
+    getValues,
+    formState: { defaultValues },
+  } = useFormContext<CreateMealSchema>();
   const [selectedFoods, setSelectedFoods] = useState<string[]>([]);
+  const [defaultSynced, setDefaultSynced] = useState(false);
   const observerTarget = useRef(null);
 
   function toggleSelection(foodId: string) {
-    if (selectedFoods.includes(foodId)) {
-      setSelectedFoods((prev) => prev.filter((id) => id !== foodId));
-    } else {
-      setSelectedFoods((prev) => [...prev, foodId]);
-    }
-  }
+    setSelectedFoods((prev) =>
+      prev.includes(foodId)
+        ? prev.filter((id) => id !== foodId)
+        : [...prev, foodId]
+    );
 
-  useEffect(() => {
-    setValue("foodIds", selectedFoods);
-  }, [selectedFoods, setValue]);
+    console.log(selectedFoods);
+  }
 
   const {
     data: foodsData,
+    isSuccess,
     isFetching: isFetchingFoods,
     fetchNextPage,
     hasNextPage,
@@ -63,6 +67,19 @@ export function MealAddFoodsStep() {
       if (element) observer.unobserve(element);
     };
   }, [handleObserver]);
+
+  useEffect(() => {
+    setValue("foodIds", selectedFoods);
+  }, [selectedFoods, setValue]);
+
+  useEffect(() => {
+    if (isSuccess && !defaultSynced) {
+      const defaultFoodIds = defaultValues?.foodIds ?? [];
+      setSelectedFoods(defaultFoodIds.filter(Boolean) as string[]);
+      setDefaultSynced(true);
+      console.log(defaultFoodIds);
+    }
+  }, [isSuccess, defaultSynced, getValues, defaultValues?.foodIds]);
 
   const hasNoFoods =
     !isFetchingFoods && foodsData?.pages[0]?.page.totalElements === 0;

@@ -18,6 +18,7 @@ import { FoodNotFound } from "./pages/foods/food-not-found";
 import { AddMeal } from "./pages/meals/add-meal/add-meal";
 import { MealNotFound } from "./pages/meals/meal-not-found";
 import { EditFood } from "./pages/foods/edit-food/edit-food";
+import { EditMeal } from "./pages/meals/edit-meal/edit-meal";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -51,6 +52,11 @@ const mealRoutes: RouteObject[] = [
     path: "/meals/:mealId",
     errorElement: <MealNotFound />,
     element: <MealDetails />,
+  },
+  {
+    path: "/meals/:mealId/edit",
+    errorElement: <MealNotFound />,
+    element: <EditMeal />,
   },
 ];
 
