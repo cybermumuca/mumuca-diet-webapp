@@ -3,8 +3,8 @@ import { Home, Utensils, Activity } from "lucide-react";
 import { isAxiosError } from "axios";
 import { useLayoutEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavItem } from "@/components/nav-item";
+import { ProfilePicture } from "@/components/profile-picture";
 
 export function AppLayout() {
   const navigate = useNavigate();
@@ -22,6 +22,15 @@ export function AppLayout() {
 
           if (status === 401) {
             navigate("/sign-in", {
+              replace: true,
+            });
+          }
+
+          if (
+            status === 422 &&
+            error.response?.data?.errorMessage === "User Not Registered Yet."
+          ) {
+            navigate("/complete-registration", {
               replace: true,
             });
           }
@@ -50,15 +59,7 @@ export function AppLayout() {
             isActive={isFoodPageActive}
           />
           <NavItem to="/body" icon={<Activity className="w-6 h-6" />} />
-          <NavItem
-            to="/profile"
-            icon={
-              <Avatar className="w-6 h-6">
-                <AvatarImage src="/placeholder-user.jpg" alt="User" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-            }
-          />
+          <NavItem to="/profile" icon={<ProfilePicture size="sm" />} />
         </div>
       </nav>
     </div>
