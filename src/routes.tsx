@@ -19,6 +19,7 @@ import { AddMeal } from "./pages/meals/add-meal/add-meal";
 import { MealNotFound } from "./pages/meals/meal-not-found";
 import { EditFood } from "./pages/foods/edit-food/edit-food";
 import { EditMeal } from "./pages/meals/edit-meal/edit-meal";
+import { CompleteRegistration } from "./pages/complete-registration/complete-registration";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -84,5 +85,6 @@ export const router = createBrowserRouter([
   ...foodRoutes,
   ...mealRoutes,
   authRoutes,
+  { path: "/complete-registration", element: <CompleteRegistration /> },
   { path: "*", element: <NotFound /> },
 ]);
