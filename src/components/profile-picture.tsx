@@ -36,7 +36,7 @@ export function ProfilePicture({ size = "md" }: ProfilePictureProps) {
         alt={`${profile.firstName} ${profile.lastName}`}
       />
       <AvatarFallback>
-        <span className="text-white text-xl font-bold">
+        <span className="text-white text-sm translate-y-[-1px]">
           {profile.firstName[0]}
           {profile.lastName[0]}
         </span>
