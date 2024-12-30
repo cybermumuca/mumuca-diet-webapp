@@ -6,7 +6,7 @@ import { AppLayout } from "./pages/home/layout";
 import { Home } from "./pages/home/home";
 import { Body } from "./pages/body/body";
 import { Foods } from "./pages/foods/foods";
-import { Profile } from "./pages/profile/profile";
+import { Settings } from "./pages/settings/settings";
 import { NotFound } from "./pages/boundaries/not-found";
 import { ErrorBoundary } from "./pages/boundaries/error-boundary";
 import { FoodDetails } from "./pages/foods/food-details";
@@ -20,6 +20,9 @@ import { MealNotFound } from "./pages/meals/meal-not-found";
 import { EditFood } from "./pages/foods/edit-food/edit-food";
 import { EditMeal } from "./pages/meals/edit-meal/edit-meal";
 import { CompleteRegistration } from "./pages/complete-registration/complete-registration";
+import { Notifications } from "./pages/settings/notifications";
+import { Account } from "./pages/settings/account";
+import { TermsAndPrivacy } from "./pages/settings/terms-and-privacy";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -62,6 +65,7 @@ const mealRoutes: RouteObject[] = [
 ];
 
 // Main routes
+
 const mainRoutes: RouteObject = {
   path: "/",
   element: <AppLayout />,
@@ -76,7 +80,15 @@ const mainRoutes: RouteObject = {
       ],
     },
     { path: "/body", element: <Body /> },
-    { path: "/profile", element: <Profile /> },
+    {
+      path: "/settings",
+      children: [
+        { index: true, element: <Settings /> },
+        { path: "account", element: <Account /> },
+        { path: "terms-and-privacy", element: <TermsAndPrivacy /> },
+        { path: "notifications", element: <Notifications /> },
+      ],
+    },
   ],
 };
 

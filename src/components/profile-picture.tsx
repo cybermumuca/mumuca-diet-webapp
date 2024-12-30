@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
 
 interface ProfilePictureProps {
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 }
 
 export function ProfilePicture({ size = "md" }: ProfilePictureProps) {
@@ -17,8 +17,12 @@ export function ProfilePicture({ size = "md" }: ProfilePictureProps) {
 
   const sizeClasses = {
     sm: "h-8 w-8",
-    md: "h-10 w-10",
-    lg: "h-12 w-12",
+    md: "h-16 w-16",
+    lg: "h-24 w-24",
+    xl: "h-32 w-32",
+    "2xl": "h-48 w-48",
+    "3xl": "h-64 w-64",
+    "4xl": "h-80 w-80",
   };
 
   if (isProfileLoading) {
@@ -32,11 +36,11 @@ export function ProfilePicture({ size = "md" }: ProfilePictureProps) {
   return (
     <Avatar className={sizeClasses[size]}>
       <AvatarImage
-        src={profile.photoUrl ?? undefined}
+        src={profile.photoUrl ?? `https://avatar.vercel.sh/satori.svg?text=${profile.firstName[0]}${profile.lastName[0]}`}
         alt={`${profile.firstName} ${profile.lastName}`}
       />
       <AvatarFallback>
-        <span className="text-white text-sm translate-y-[-1px]">
+        <span className="text-muted-foreground text-sm translate-y-[-1px]">
           {profile.firstName[0]}
           {profile.lastName[0]}
         </span>

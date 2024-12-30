@@ -59,7 +59,7 @@ export function AppLayout() {
             isActive={isFoodPageActive}
           />
           <NavItem to="/body" icon={<Activity className="w-6 h-6" />} />
-          <NavItem to="/profile" icon={<ProfilePicture size="sm" />} />
+          <NavItem to="/settings" icon={<ProfilePicture size="sm" />} />
         </div>
       </nav>
     </div>
