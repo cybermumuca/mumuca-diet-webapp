@@ -10,7 +10,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeftIcon, Loader2 } from "lucide-react";
 import { RegistrationGoalStep } from "./registration-goal-step";
 import { useMutation } from "@tanstack/react-query";
-import { completeRegistration } from "@/api/complete-registration";
+import {
+  completeRegistration,
+  CompleteRegistrationResponse,
+} from "@/api/complete-registration";
+import { ConfirmGoalStep } from "./confirm-goal-step";
+import { resetRegister } from "@/api/reset-register";
 
 type Step = "basicInfo" | "goal" | "confirmGoal";
 
@@ -60,11 +65,10 @@ export type CompleteRegistrationSchema = z.infer<
 >;
 
 export function CompleteRegistration() {
-  // 3. Confirm goal
-  // Display all info
-
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("basicInfo");
+  const [registrationData, setRegistrationData] =
+    useState<CompleteRegistrationResponse>({} as CompleteRegistrationResponse);
 
   const methods = useForm<CompleteRegistrationSchema>({
     resolver: zodResolver(completeRegistrationSchema),
@@ -92,14 +96,26 @@ export function CompleteRegistration() {
     mutationFn: completeRegistration,
   });
 
+  const { mutateAsync: resetRegistration } = useMutation({
+    mutationFn: resetRegister,
+    retry: 3,
+    retryDelay: 1000,
+  });
+
   async function handleSubmitRegistration(data: CompleteRegistrationSchema) {
     try {
-      console.log(data);
       const registrationData = await submitRegistration(data);
-      console.log(registrationData);
+      setRegistrationData(registrationData);
+      setStep("confirmGoal");
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async function handleResetRegister() {
+    methods.reset();
+    setStep("basicInfo");
+    await resetRegistration();
   }
 
   async function handleNextStep() {
@@ -116,6 +132,12 @@ export function CompleteRegistration() {
           ] as const)
         : step === "goal"
         ? (["targetWeight", "goal"] as const)
+        : step === "confirmGoal"
+        ? (
+            Object.keys(completeRegistrationSchema.shape) as Array<
+              keyof typeof completeRegistrationSchema.shape
+            >
+          ).map((key) => `${key}` as const)
         : [];
 
     const isValid = await methods.trigger(fieldsToValidate);
@@ -125,8 +147,13 @@ export function CompleteRegistration() {
     }
 
     if (step === "goal") {
-      const registrationValues = methods.getValues();
-      handleSubmitRegistration(registrationValues);
+      const goalValues = methods.getValues();
+      handleSubmitRegistration(goalValues);
+      return;
+    }
+
+    if (step === "confirmGoal") {
+      navigate("/", { replace: true });
       return;
     }
 
@@ -171,13 +198,28 @@ export function CompleteRegistration() {
           >
             {step === "basicInfo" && <RegistrationBasicInformationStep />}
             {step === "goal" && <RegistrationGoalStep />}
+            {step === "confirmGoal" && (
+              <ConfirmGoalStep {...registrationData} />
+            )}
           </motion.div>
         </AnimatePresence>
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex flex-col justify-center">
+          {step === "confirmGoal" && (
+            <Button
+              type="button"
+              variant="destructive"
+              className="w-full mb-4 font-semibold"
+              onClick={handleResetRegister}
+            >
+              Resetar
+            </Button>
+          )}
+
           <Button
             type="button"
             className="w-full font-semibold"
             onClick={handleNextStep}
+            disabled={isSubmittingRegistration}
           >
             {isSubmittingRegistration ? (
               <>
