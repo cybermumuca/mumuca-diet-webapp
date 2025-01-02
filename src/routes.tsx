@@ -65,7 +65,6 @@ const mealRoutes: RouteObject[] = [
 ];
 
 // Main routes
-
 const mainRoutes: RouteObject = {
   path: "/",
   element: <AppLayout />,
@@ -82,21 +81,24 @@ const mainRoutes: RouteObject = {
     { path: "/body", element: <Body /> },
     {
       path: "/settings",
-      children: [
-        { index: true, element: <Settings /> },
-        { path: "account", element: <Account /> },
-        { path: "terms-and-privacy", element: <TermsAndPrivacy /> },
-        { path: "notifications", element: <Notifications /> },
-      ],
+      element: <Settings />,
     },
   ],
 };
+
+// Settings routes
+const settingsRoutes: RouteObject[] = [
+  { path: "/settings/account", element: <Account /> },
+  { path: "/settings/terms-and-privacy", element: <TermsAndPrivacy /> },
+  { path: "/settings/notifications", element: <Notifications /> },
+];
 
 export const router = createBrowserRouter([
   mainRoutes,
   ...foodRoutes,
   ...mealRoutes,
   authRoutes,
+  ...settingsRoutes,
   { path: "/complete-registration", element: <CompleteRegistration /> },
   { path: "*", element: <NotFound /> },
 ]);
