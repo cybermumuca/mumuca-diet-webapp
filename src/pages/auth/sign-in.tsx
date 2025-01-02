@@ -16,7 +16,7 @@ import { useEffect } from "react";
 
 import { Helmet } from "react-helmet-async";
 import { useForm, useWatch } from "react-hook-form";
-import { Link, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 type SignInSchema = {
@@ -26,6 +26,7 @@ type SignInSchema = {
 
 export function SignIn() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -47,6 +48,7 @@ export function SignIn() {
   async function handleAuthenticate({ email, password }: SignInRequest) {
     try {
       await authenticate({ email, password });
+      navigate("/", { replace: true });
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 401) {
         setError("email", {});
@@ -63,19 +65,14 @@ export function SignIn() {
     }
   }
 
-  const watchedEmail = useWatch({
-    control: control,
-    name: "email",
-  });
-
-  const watchedPassword = useWatch({
-    control: control,
-    name: "password",
+  const watchedFields = useWatch({
+    control,
+    name: ["email", "password"],
   });
 
   useEffect(() => {
     clearErrors(["email", "password"]);
-  }, [clearErrors, watchedEmail, watchedPassword]);
+  }, [clearErrors, watchedFields]);
 
   return (
     <>
