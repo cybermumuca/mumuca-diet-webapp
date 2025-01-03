@@ -10,7 +10,7 @@ export function ProgressIndicator({
   totalSteps,
 }: ProgressIndicatorProps) {
   return (
-    <div className="w-full bg-gray-300 dark:bg-muted-foreground rounded-full h-2.5 mb-4">
+    <div className="w-full bg-gray-300 dark:bg-muted-foreground rounded-full h-2.5 mb-4 overflow-hidden">
       <motion.div
         style={{ backgroundColor: "#4f46e5" }}
         className="h-2.5 rounded-full"
