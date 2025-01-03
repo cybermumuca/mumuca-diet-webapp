@@ -1,5 +1,5 @@
 export interface Macronutrient {
   protein: number;
-  carbohydrates: number;
+  carbs: number;
   fat: number;
 }
