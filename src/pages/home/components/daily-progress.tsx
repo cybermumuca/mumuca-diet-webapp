@@ -7,7 +7,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { MacronutrientChart } from "./macronutrient-chart";
+import { GoalChart } from "./goal-chart";
 
 type DailyProgressProps = {
   date: Date;
@@ -21,7 +21,7 @@ export function DailyProgress({ date }: DailyProgressProps) {
   } = useQuery({
     queryKey: ["dailyProgress", date],
     queryFn: () => {
-      const formattedDate = format(date, "dd/MM/yyyy");
+      const formattedDate = format(date, "yyyy-MM-dd");
       return getDailyProgress({ date: formattedDate });
     },
   });
@@ -37,28 +37,49 @@ export function DailyProgress({ date }: DailyProgressProps) {
   return (
     <Carousel className="w-full">
       <CarouselContent>
-        <CarouselItem>
-          <MacronutrientChart
+        <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+          <GoalChart
+            name={"Calorias"}
+            consumed={dailyProgress.caloriesConsumed}
+            target={dailyProgress.targetCalories}
+            color="#f04343"
+            unit="kcal"
+          />
+        </CarouselItem>
+        <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+          <GoalChart
+            name={"Água"}
+            consumed={dailyProgress.waterIngested}
+            target={dailyProgress.waterIntakeTarget}
+            color="#19f2f9"
+            unit="L"
+          />
+        </CarouselItem>
+        <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+          <GoalChart
             name={"Carboidratos"}
             consumed={dailyProgress.macronutrientsConsumed.carbs}
             target={dailyProgress.macronutrientsTarget.carbs}
             color="#FFB74D"
+            unit="g"
           />
         </CarouselItem>
-        <CarouselItem>
-          <MacronutrientChart
+        <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+          <GoalChart
             name={"Proteínas"}
             consumed={dailyProgress.macronutrientsConsumed.protein}
             target={dailyProgress.macronutrientsTarget.protein}
-            color="#4FC3F7"
+            color="#8B4513"
+            unit="g"
           />
         </CarouselItem>
-        <CarouselItem>
-          <MacronutrientChart
+        <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+          <GoalChart
             name={"Gorduras"}
             consumed={dailyProgress.macronutrientsConsumed.fat}
             target={dailyProgress.macronutrientsTarget.fat}
-            color="#fd4739"
+            color="#ee6511"
+            unit="g"
           />
         </CarouselItem>
       </CarouselContent>

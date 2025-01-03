@@ -17,19 +17,21 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
-interface MacronutrientChartProps {
+interface GoalChartProps {
   name: string;
   consumed: number;
   target: number;
   color: string;
+  unit: string;
 }
 
-export function MacronutrientChart({
+export function GoalChart({
   name,
   consumed,
   target,
-  color = "#FFC107",
-}: MacronutrientChartProps) {
+  color,
+  unit = "g"
+}: GoalChartProps) {
   const percentage = Math.round((consumed / target) * 100);
 
   const chartData = [
@@ -103,7 +105,7 @@ export function MacronutrientChart({
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground text-sm"
                         >
-                          {consumed}g / {target}g
+                          {consumed}{unit} / {target}{unit}
                         </tspan>
                       </text>
                     );
@@ -121,7 +123,7 @@ export function MacronutrientChart({
               Meta atingida! <TrendingUp className="h-4 w-4 text-green-500" />
             </>
           ) : (
-            <>Faltam {target - consumed}g para a meta</>
+            <>Faltam {target - consumed}{unit} para a meta</>
           )}
         </div>
         <div className="leading-none text-muted-foreground">
