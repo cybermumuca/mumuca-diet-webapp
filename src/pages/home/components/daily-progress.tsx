@@ -6,6 +6,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { GoalChart } from "./goal-chart";
 
@@ -83,6 +85,8 @@ export function DailyProgress({ date }: DailyProgressProps) {
           />
         </CarouselItem>
       </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext  />
     </Carousel>
   );
 }
