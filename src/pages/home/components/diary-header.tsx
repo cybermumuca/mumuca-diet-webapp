@@ -21,6 +21,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getProfile } from "@/api/get-profile";
 import { DiaryHeaderSkeleton } from "./diary-header-skeleton";
 import { getGreetingMessage } from "@/utils/get-greeting-message";
+import { ProfilePicture } from "@/components/profile-picture";
+import { useNavigate } from "react-router";
 
 type DiaryHeaderProps = {
   date: Date;
@@ -28,6 +30,8 @@ type DiaryHeaderProps = {
 };
 
 export function DiaryHeader({ date, onDateChange }: DiaryHeaderProps) {
+  const navigate = useNavigate();
+
   const {
     data: profile,
     isLoading: isProfileLoading,
@@ -47,6 +51,10 @@ export function DiaryHeader({ date, onDateChange }: DiaryHeaderProps) {
     onDateChange(addDays(date, 1));
   }
 
+  function navigateToProfile() {
+    navigate("/settings");
+  }
+
   if (isProfileLoading) {
     return <DiaryHeaderSkeleton />;
   }
@@ -57,9 +65,13 @@ export function DiaryHeader({ date, onDateChange }: DiaryHeaderProps) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">
-        {getGreetingMessage(new Date(), profile.firstName)}
-      </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold mb-6">
+          {getGreetingMessage(new Date(), profile.firstName)}
+        </h1>
+
+        <ProfilePicture size="sm" classname="translate-y-[-10px]" onClick={navigateToProfile} />
+      </div>
 
       <div className="mb-6 w-full">
         <div className="flex justify-between w-full gap-2">

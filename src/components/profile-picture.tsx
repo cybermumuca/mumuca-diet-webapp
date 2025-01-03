@@ -3,12 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
+import { ComponentProps } from "react";
 
-interface ProfilePictureProps {
+type ProfilePictureProps = ComponentProps<typeof Avatar> & {
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
-}
+  classname?: string;
+};
 
-export function ProfilePicture({ size = "md" }: ProfilePictureProps) {
+export function ProfilePicture({
+  size = "md",
+  classname,
+  ...props
+}: ProfilePictureProps) {
   const {
     data: profile,
     isLoading: isProfileLoading,
@@ -34,9 +41,12 @@ export function ProfilePicture({ size = "md" }: ProfilePictureProps) {
   }
 
   return (
-    <Avatar className={sizeClasses[size]}>
+    <Avatar className={cn(sizeClasses[size], classname)} {...props}>
       <AvatarImage
-        src={profile.photoUrl ?? `https://avatar.vercel.sh/satori.svg?text=${profile.firstName[0]}${profile.lastName[0]}`}
+        src={
+          profile.photoUrl ??
+          `https://avatar.vercel.sh/satori.svg?text=${profile.firstName[0]}${profile.lastName[0]}`
+        }
         alt={`${profile.firstName} ${profile.lastName}`}
       />
       <AvatarFallback>
