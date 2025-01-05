@@ -23,6 +23,7 @@ import { CompleteRegistration } from "./pages/complete-registration/complete-reg
 import { Notifications } from "./pages/settings/notifications";
 import { Account } from "./pages/settings/account";
 import { TermsAndPrivacy } from "./pages/settings/terms-and-privacy";
+import { EditMealLogPreferences } from "./pages/home/edit-meal-log-preferences";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -93,12 +94,17 @@ const settingsRoutes: RouteObject[] = [
   { path: "/settings/notifications", element: <Notifications /> },
 ];
 
+const mealLogPreferencesRoutes: RouteObject[] = [
+  { path: "/meal-log-preferences/edit", element: <EditMealLogPreferences /> },
+];
+
 export const router = createBrowserRouter([
   mainRoutes,
   ...foodRoutes,
   ...mealRoutes,
   authRoutes,
   ...settingsRoutes,
+  ...mealLogPreferencesRoutes,
   { path: "/complete-registration", element: <CompleteRegistration /> },
   { path: "*", element: <NotFound /> },
 ]);

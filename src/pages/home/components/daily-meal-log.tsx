@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { Bell, CirclePlus, Menu, Pencil } from "lucide-react";
 import { MealLogItem } from "./meal-log-item";
+import { useNavigate } from "react-router";
 
 type DailyMealLogProps = {
   date: Date;
@@ -51,8 +52,10 @@ const mealLogs: GetMealLogsResponse = {
 };
 
 export function DailyMealLog({ date }: DailyMealLogProps) {
+  const navigate = useNavigate();
+
   function handleEditMealLogPreferences() {
-    console.log("Edit meal log preferences");
+    navigate("/meal-log-preferences/edit");
   }
 
   function handleAddMealLog() {
