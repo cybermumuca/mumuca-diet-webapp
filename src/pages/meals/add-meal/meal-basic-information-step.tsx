@@ -12,7 +12,7 @@ import {
 
 const mealTypeOptions = [
   { value: "BREAKFAST", label: "Café da Manhã" },
-  { value: "BRUNCH", label: "Brunch" },
+  { value: "BRUNCH", label: "Café da Manhã Tardio" },
   { value: "LUNCH", label: "Almoço" },
   { value: "AFTERNOON_SNACK", label: "Lanche da Tarde" },
   { value: "DINNER", label: "Jantar" },
