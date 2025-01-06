@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, Loader2, Plus } from "lucide-react";
 import { useNavigate } from "react-router";
 import { AddMealLogPreferenceDrawer } from "./components/add-meal-log-preference-drawer";
+import { EditMealLogPreferenceDrawer } from "./components/edit-meal-log-preference-drawer";
 
 export function EditMealLogPreferences() {
   const navigate = useNavigate();
@@ -58,17 +59,25 @@ export function EditMealLogPreferences() {
         </div>
       </div>
       <Separator className="my-4 bg-muted-foreground" />
-      {mealLogPreferences.map(({ type, time, caloriesGoal }) => {
+      {mealLogPreferences.map(({ id, type, time, caloriesGoal }) => {
         return (
-          <div key={type} className="border-[1px] rounded-lg p-4 w-full mb-2">
-            <div className="flex justify-between items-center">
-              <h3 className="font-semibold">{getMealTypeLabel(type)}</h3>
-              <span className="text-sm text-muted-foreground">{time}</span>
+          <EditMealLogPreferenceDrawer
+            key={type}
+            id={id}
+            time={time}
+            type={type}
+            caloriesGoal={caloriesGoal}
+          >
+            <div className="border-[1px] rounded-lg p-4 w-full mb-2 cursor-pointer hover:bg-accent">
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold">{getMealTypeLabel(type)}</h3>
+                <span className="text-sm text-muted-foreground">{time}</span>
+              </div>
+              <div>
+                <span className="text-base">Meta: {caloriesGoal} kcal</span>
+              </div>
             </div>
-            <div>
-              <span className="text-base">Meta: {caloriesGoal} kcal</span>
-            </div>
-          </div>
+          </EditMealLogPreferenceDrawer>
         );
       })}
 
