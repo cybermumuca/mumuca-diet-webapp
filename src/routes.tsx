@@ -24,6 +24,7 @@ import { Notifications } from "./pages/settings/notifications";
 import { Account } from "./pages/settings/account";
 import { TermsAndPrivacy } from "./pages/settings/terms-and-privacy";
 import { EditMealLogPreferences } from "./pages/home/edit-meal-log-preferences";
+import { ScrollToTop } from "./scroll-to-top";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -68,7 +69,12 @@ const mealRoutes: RouteObject[] = [
 // Main routes
 const mainRoutes: RouteObject = {
   path: "/",
-  element: <AppLayout />,
+  element: (
+    <>
+      <ScrollToTop />
+      <AppLayout />
+    </>
+  ),
   errorElement: <ErrorBoundary />,
   children: [
     { index: true, element: <Home /> },
