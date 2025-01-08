@@ -5,7 +5,7 @@ export type GetMealLogsQuery = {
   date?: string;
 };
 
-interface MealLog {
+export interface MealLog {
   id: string;
   type: MealType;
   time: string;
@@ -13,14 +13,10 @@ interface MealLog {
   caloriesConsumed: number;
 }
 
-export interface GetMealLogsResponse {
-  mealLogs: MealLog[];
-}
-
 export async function getMealLogs({
   date,
-}: GetMealLogsQuery): Promise<GetMealLogsResponse> {
-  const response = await api.get<GetMealLogsResponse>("/v1/meal-logs", {
+}: GetMealLogsQuery): Promise<MealLog[]> {
+  const response = await api.get<MealLog[]>("/v1/meal-logs", {
     params: {
       date,
     },

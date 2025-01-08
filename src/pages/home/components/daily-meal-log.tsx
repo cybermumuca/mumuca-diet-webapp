@@ -1,4 +1,4 @@
-import { getMealLogs, GetMealLogsResponse } from "@/api/get-meal-logs";
+import { getMealLogs, MealLog } from "@/api/get-meal-logs";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -20,6 +20,7 @@ import {
 } from "@/api/get-meal-log-preferences";
 import { DailyMealLogSkeleton } from "./daily-meal-log-skeleton";
 import { format } from "date-fns";
+import { AddMealLogDrawer } from "./add-meal-log-drawer";
 
 type DailyMealLogProps = {
   date: Date;
@@ -89,9 +90,11 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
 
   if (mealLogsError) throw mealLogsError;
 
+  console.log(mealLogs);
+
   const itemsToRender: React.ReactNode[] = renderItems(
     mealLogPreferences,
-    mealLogs as GetMealLogsResponse
+    mealLogs
   );
 
   function handleEditMealLogPreferences() {
@@ -103,7 +106,7 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
   }
 
   return (
-    <div>
+    <section id="meal-log">
       <div className="flex items-center justify-between mt-4">
         <h2 className="font-semibold text-lg">Refeições</h2>
         <Drawer>
@@ -128,14 +131,16 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar refeições preferidas do diário
               </Button>
-              <Button
-                onClick={handleAddMealLog}
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <CirclePlus className="mr-2 h-4 w-4" />
-                Adicionar refeição ao diário
-              </Button>
+              <AddMealLogDrawer date={date}>
+                <Button
+                  onClick={handleAddMealLog}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <CirclePlus className="mr-2 h-4 w-4" />
+                  Adicionar refeição ao diário
+                </Button>
+              </AddMealLogDrawer>
               <Button
                 onClick={handleAddMealLog}
                 className="w-full justify-start"
@@ -155,15 +160,15 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
         </Drawer>
       </div>
       <div className="mt-2 space-y-4 mb-8 w-full">{itemsToRender}</div>
-    </div>
+    </section>
   );
 }
 
 function renderItems(
   mealLogPreferences: GetMealLogPreferencesResponse,
-  mealLogs: GetMealLogsResponse
+  mealLogs: MealLog[] | undefined
 ) {
-  const mealLogTypes = mealLogs?.mealLogs?.map((log) => log.type) ?? [];
+  const mealLogTypes = mealLogs ? mealLogs.map((mealLog) => mealLog.type) : [];
 
   const filteredPreferences = mealLogPreferences.filter(
     (pref) => !mealLogTypes.includes(pref.type)
@@ -180,15 +185,17 @@ function renderItems(
         caloriesGoal={mealLog.caloriesGoal}
       />
     )),
-    ...(mealLogs?.mealLogs?.map((mealLog) => (
-      <MealLogItem
-        key={mealLog.id}
-        type={mealLog.type}
-        time={mealLog.time}
-        isFromPreferences={false}
-        caloriesConsumed={mealLog.caloriesConsumed}
-        caloriesGoal={mealLog.caloriesGoal}
-      />
-    )) ?? []),
+    ...(mealLogs
+      ? mealLogs.map((mealLog) => (
+          <MealLogItem
+            key={mealLog.id}
+            type={mealLog.type}
+            time={mealLog.time}
+            isFromPreferences={false}
+            caloriesConsumed={mealLog.caloriesConsumed ?? 0}
+            caloriesGoal={mealLog.caloriesGoal}
+          />
+        ))
+      : []),
   ];
 }
