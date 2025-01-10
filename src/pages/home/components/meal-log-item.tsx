@@ -6,9 +6,10 @@ import { getMealTypeLabel } from "@/utils/get-meal-type-label";
 type MealLogItemProps = {
   type: MealType;
   time: string;
-  isFromPreferences: boolean;
+  isFromPreferences?: boolean;
   caloriesConsumed: number;
   caloriesGoal: number;
+  onClick?: () => void;
 };
 
 export function MealLogItem({
@@ -16,10 +17,14 @@ export function MealLogItem({
   time,
   caloriesConsumed,
   caloriesGoal,
-  isFromPreferences,
+  isFromPreferences = false,
+  onClick = () => {},
 }: MealLogItemProps) {
   return (
-    <div className="border-[1px] rounded-lg p-4 w-full">
+    <div
+      className="border-[1px] rounded-lg p-4 w-full cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex justify-between items-center mb-2">
         <div className="flex flex-col gap-2 justify-start items-start">
           <h3 className="font-semibold">{getMealTypeLabel(type)}</h3>

@@ -25,6 +25,7 @@ import { Account } from "./pages/settings/account";
 import { TermsAndPrivacy } from "./pages/settings/terms-and-privacy";
 import { EditMealLogPreferences } from "./pages/home/edit-meal-log-preferences";
 import { ScrollToTop } from "./scroll-to-top";
+import { MealLogDetails } from "./pages/home/meal-log-details";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -104,6 +105,10 @@ const mealLogPreferencesRoutes: RouteObject[] = [
   { path: "/meal-log-preferences/edit", element: <EditMealLogPreferences /> },
 ];
 
+const mealLogRoutes: RouteObject[] = [
+  { path: "/meal-logs/:mealLogId", element: <MealLogDetails /> },
+];
+
 export const router = createBrowserRouter([
   mainRoutes,
   ...foodRoutes,
@@ -111,6 +116,7 @@ export const router = createBrowserRouter([
   authRoutes,
   ...settingsRoutes,
   ...mealLogPreferencesRoutes,
+  ...mealLogRoutes,
   { path: "/complete-registration", element: <CompleteRegistration /> },
   { path: "*", element: <NotFound /> },
 ]);

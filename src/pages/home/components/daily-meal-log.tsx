@@ -25,37 +25,6 @@ import { AddMealLogDrawer } from "./add-meal-log-drawer";
 type DailyMealLogProps = {
   date: Date;
 };
-//   mealLogs: [
-//     {
-//       id: "1",
-//       type: "BREAKFAST",
-//       time: "08:00",
-//       caloriesGoal: 500,
-//       caloriesConsumed: 150,
-//     },
-//     {
-//       id: "2",
-//       type: "LUNCH",
-//       time: "12:00",
-//       caloriesGoal: 700,
-//       caloriesConsumed: 650,
-//     },
-//     {
-//       id: "4",
-//       type: "SNACK",
-//       time: "15:00",
-//       caloriesGoal: 200,
-//       caloriesConsumed: 240,
-//     },
-//     {
-//       id: "3",
-//       type: "DINNER",
-//       time: "19:00",
-//       caloriesGoal: 600,
-//       caloriesConsumed: 550,
-//     },
-//   ],
-// };
 
 export function DailyMealLog({ date }: DailyMealLogProps) {
   const navigate = useNavigate();
@@ -90,19 +59,16 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
 
   if (mealLogsError) throw mealLogsError;
 
-  console.log(mealLogs);
-
   const itemsToRender: React.ReactNode[] = renderItems(
     mealLogPreferences,
-    mealLogs
+    mealLogs,
+    (mealLogId: string) => {
+      navigate(`meal-logs/${mealLogId}`);
+    }
   );
 
   function handleEditMealLogPreferences() {
     navigate("/meal-log-preferences/edit");
-  }
-
-  function handleAddMealLog() {
-    console.log("Add meal log");
   }
 
   return (
@@ -132,17 +98,12 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
                 Editar refeições preferidas do diário
               </Button>
               <AddMealLogDrawer date={date}>
-                <Button
-                  onClick={handleAddMealLog}
-                  className="w-full justify-start"
-                  variant="outline"
-                >
+                <Button className="w-full justify-start" variant="outline">
                   <CirclePlus className="mr-2 h-4 w-4" />
-                  Adicionar refeição ao diário
+                  Adicionar registro de refeição ao diário
                 </Button>
               </AddMealLogDrawer>
               <Button
-                onClick={handleAddMealLog}
                 className="w-full justify-start"
                 variant="outline"
                 disabled
@@ -166,7 +127,8 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
 
 function renderItems(
   mealLogPreferences: GetMealLogPreferencesResponse,
-  mealLogs: MealLog[] | undefined
+  mealLogs: MealLog[] | undefined,
+  onClickInMealLog: (mealLogId: string) => void
 ) {
   const mealLogTypes = mealLogs ? mealLogs.map((mealLog) => mealLog.type) : [];
 
@@ -189,9 +151,9 @@ function renderItems(
       ? mealLogs.map((mealLog) => (
           <MealLogItem
             key={mealLog.id}
+            onClick={() => onClickInMealLog(mealLog.id)}
             type={mealLog.type}
             time={mealLog.time}
-            isFromPreferences={false}
             caloriesConsumed={mealLog.caloriesConsumed ?? 0}
             caloriesGoal={mealLog.caloriesGoal}
           />
