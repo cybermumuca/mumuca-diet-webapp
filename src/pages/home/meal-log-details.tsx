@@ -1,4 +1,11 @@
 import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
   AlertDialogHeader,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
@@ -14,26 +21,22 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@radix-ui/react-alert-dialog";
-import { ChevronLeftIcon, Menu, Pencil, Trash } from "lucide-react";
+import { ChevronLeftIcon, Loader2, Menu, Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 import { MealLogInfo } from "./components/meal-log-info";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { z } from "zod";
 import { MealLogNotFoundError } from "./errors/meal-log-not-found-error";
 import { MealLogNutritionalInfo } from "./components/meal-log-nutritional-info";
 import { MealLogFoods } from "./components/meal-log-foods";
 import { MealLogMeals } from "./components/meal-log-meals";
+import { deleteMealLog } from "@/api/delete-meal-log";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { queryClient } from "@/lib/react-query";
 
 export function MealLogDetails() {
+  const navigate = useNavigate();
   const { mealLogId } = useParams<{ mealLogId: string }>();
 
   if (!mealLogId || !z.string().uuid().safeParse(mealLogId).success) {
@@ -41,9 +44,30 @@ export function MealLogDetails() {
   }
 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const { mutateAsync: removeMealLog, isPending: isRemovingMealLog } =
+    useMutation({
+      mutationFn: deleteMealLog,
+      onSuccess: () => {
+        queryClient.refetchQueries({ queryKey: ["meal-logs"], active: true });
+        queryClient.removeQueries({ queryKey: ["meal-log", mealLogId] });
+      },
+    });
+
   function handleBack() {}
   function handleEdit() {}
-  function handleDelete() {}
+
+  async function handleDelete() {
+    try {
+      await removeMealLog(mealLogId!);
+
+      toast.success("Registro removido com sucesso!");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("Não foi possível remover o registro de refeição. Tente novamente mais tarde.");
+    }
+  }
 
   return (
     <div className="container mx-auto px-8 py-6 max-w-2xl">
@@ -58,9 +82,7 @@ export function MealLogDetails() {
           >
             <ChevronLeftIcon className="translate-y-[2px]" />
           </Button>
-          <h1 className="text-xl font-bold text-nowrap">
-            Visualizar Registro de Refeição
-          </h1>
+          <h1 className="text-xl font-bold text-nowrap">Visualizar Registro</h1>
         </div>
         <Drawer>
           <DrawerTrigger asChild>
@@ -88,10 +110,19 @@ export function MealLogDetails() {
                 <AlertDialogTrigger asChild>
                   <Button
                     className="w-full justify-start"
+                    disabled={isRemovingMealLog}
                     variant="destructive"
                   >
-                    <Trash className="mr-2 h-4 w-4" />
-                    Excluir Registro de Refeição
+                    {isRemovingMealLog ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                      </>
+                    ) : (
+                      <>
+                        <Trash className="mr-2 h-4 w-4" />
+                        Excluir Registro de Refeição
+                      </>
+                    )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
