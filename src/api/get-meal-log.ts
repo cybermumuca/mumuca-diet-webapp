@@ -1,7 +1,7 @@
 import { api } from "@/lib/axios";
 import { MealType } from "@/types/meal";
 
-interface GetMealLogResponse {
+export interface GetMealLogResponse {
   id: string;
   type: MealType;
   date: string;

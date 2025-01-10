@@ -26,6 +26,7 @@ import { TermsAndPrivacy } from "./pages/settings/terms-and-privacy";
 import { EditMealLogPreferences } from "./pages/home/edit-meal-log-preferences";
 import { ScrollToTop } from "./scroll-to-top";
 import { MealLogDetails } from "./pages/home/meal-log-details";
+import { EditMealLog } from "./pages/home/edit-meal-log";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -107,6 +108,9 @@ const mealLogPreferencesRoutes: RouteObject[] = [
 
 const mealLogRoutes: RouteObject[] = [
   { path: "/meal-logs/:mealLogId", element: <MealLogDetails /> },
+  { path: "/meal-logs/:mealLogId/edit", element: <EditMealLog /> },
+  { path: "/meal-logs/:mealLogId/foods", element: <MealLogDetails /> },
+  { path: "/meal-logs/:mealLogId/meals", element: <MealLogDetails /> },
 ];
 
 export const router = createBrowserRouter([

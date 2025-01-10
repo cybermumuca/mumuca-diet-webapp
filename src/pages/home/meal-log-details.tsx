@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import { queryClient } from "@/lib/react-query";
 
 export function MealLogDetails() {
+  
   const navigate = useNavigate();
   const { mealLogId } = useParams<{ mealLogId: string }>();
 
@@ -58,7 +59,11 @@ export function MealLogDetails() {
     navigate("/");
   }
 
-  function handleEdit() {}
+  function handleEdit() {
+    navigate(`/meal-logs/${mealLogId}/edit`, {
+      state: { backUrl: `/meal-logs/${mealLogId}` },
+    });
+  }
 
   async function handleDelete() {
     try {
