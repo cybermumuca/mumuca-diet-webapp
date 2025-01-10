@@ -54,7 +54,10 @@ export function MealLogDetails() {
       },
     });
 
-  function handleBack() {}
+  function handleBack() {
+    navigate("/");
+  }
+
   function handleEdit() {}
 
   async function handleDelete() {
@@ -65,7 +68,9 @@ export function MealLogDetails() {
       navigate("/");
     } catch (error) {
       console.error(error);
-      toast.error("Não foi possível remover o registro de refeição. Tente novamente mais tarde.");
+      toast.error(
+        "Não foi possível remover o registro de refeição. Tente novamente mais tarde."
+      );
     }
   }
 
