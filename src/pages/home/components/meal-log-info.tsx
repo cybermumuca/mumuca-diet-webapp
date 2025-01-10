@@ -1,7 +1,7 @@
 import { getMealLog } from "@/api/get-meal-log";
 import { getMealTypeLabel } from "@/utils/get-meal-type-label";
 import { useQuery } from "@tanstack/react-query";
-import { format, isToday, isTomorrow, isYesterday } from "date-fns";
+import { format, isToday, isTomorrow, isYesterday, parseISO } from "date-fns";
 import { AlarmClock, CalendarIcon } from "lucide-react";
 import { MealLogNotFoundError } from "../errors/meal-log-not-found-error";
 import { MealLogInfoSkeleton } from "./meal-log-info-skeleton";
@@ -30,13 +30,13 @@ export function MealLogInfo({ mealLogId }: MealLogInfoProps) {
       <div className="flex items-start gap-2 mb-2 mt-1">
         <p className="text-muted-foreground font-medium mb-4">
           <CalendarIcon className="w-4 h-4 inline-block translate-y-[-2px] mr-1" />
-          {isToday(mealLog.date)
-            ? `${format(mealLog.date, "dd/MM/yyyy")} (Hoje)`
-            : isYesterday(mealLog.date)
-            ? `${format(mealLog.date, "dd/MM/yyyy")} (Ontem)`
-            : isTomorrow(mealLog.date)
-            ? `${format(mealLog.date, "dd/MM/yyyy")} (Amanhã)`
-            : format(mealLog.date, "dd/MM/yyyy")}{" "}
+          {isToday(parseISO(mealLog.date))
+            ? `${format(parseISO(mealLog.date), "dd/MM/yyyy")} (Hoje)`
+            : isYesterday(parseISO(mealLog.date))
+            ? `${format(parseISO(mealLog.date), "dd/MM/yyyy")} (Ontem)`
+            : isTomorrow(parseISO(mealLog.date))
+            ? `${format(parseISO(mealLog.date), "dd/MM/yyyy")} (Amanhã)`
+            : format(parseISO(mealLog.date), "dd/MM/yyyy")}{" "}
         </p>
         <p className="text-muted-foreground font-medium">
           <AlarmClock className="w-4 h-4 inline-block translate-y-[-2px] ml-1" />{" "}
