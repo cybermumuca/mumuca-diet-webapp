@@ -21,6 +21,7 @@ import {
 import { DailyMealLogSkeleton } from "./daily-meal-log-skeleton";
 import { format } from "date-fns";
 import { AddMealLogDrawer } from "./add-meal-log-drawer";
+import { MealLogPreferenceDrawer } from "./meal-log-preference-drawer";
 
 type DailyMealLogProps = {
   date: Date;
@@ -64,7 +65,8 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
     mealLogs,
     (mealLogId: string) => {
       navigate(`meal-logs/${mealLogId}`);
-    }
+    },
+    date
   );
 
   function handleEditMealLogPreferences() {
@@ -128,7 +130,8 @@ export function DailyMealLog({ date }: DailyMealLogProps) {
 function renderItems(
   mealLogPreferences: GetMealLogPreferencesResponse,
   mealLogs: MealLog[] | undefined,
-  onClickInMealLog: (mealLogId: string) => void
+  onClickInMealLog: (mealLogId: string) => void,
+  date: Date
 ) {
   const mealLogTypes = mealLogs ? mealLogs.map((mealLog) => mealLog.type) : [];
 
@@ -138,14 +141,23 @@ function renderItems(
 
   return [
     ...filteredPreferences.map((mealLog) => (
-      <MealLogItem
+      <MealLogPreferenceDrawer
         key={mealLog.id}
+        id={mealLog.id}
+        date={date}
         type={mealLog.type}
         time={mealLog.time}
-        isFromPreferences
-        caloriesConsumed={0}
         caloriesGoal={mealLog.caloriesGoal}
-      />
+      >
+        <MealLogItem
+          key={mealLog.id}
+          type={mealLog.type}
+          time={mealLog.time}
+          isFromPreferences
+          caloriesConsumed={0}
+          caloriesGoal={mealLog.caloriesGoal}
+        />
+      </MealLogPreferenceDrawer>
     )),
     ...(mealLogs
       ? mealLogs.map((mealLog) => (
