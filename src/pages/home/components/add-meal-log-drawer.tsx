@@ -145,7 +145,6 @@ export function AddMealLogDrawer({ children, date }: AddMealLogDrawerProps) {
     onSuccess: (newMealLog) => {
       queryClient.setQueryData(["meal-logs", date], (oldData: MealLog[]) => {
         const updatedData = [...(oldData || []), newMealLog];
-        console.log(updatedData);
         return updatedData.sort((a, b) => a.time.localeCompare(b.time));
       });
     },
