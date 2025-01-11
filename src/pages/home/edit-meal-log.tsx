@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { MealLogNotFoundError } from "./errors/meal-log-not-found-error";
-import { date, z } from "zod";
+import { z } from "zod";
 import { CalendarIcon, ChevronLeftIcon, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Controller, useForm } from "react-hook-form";

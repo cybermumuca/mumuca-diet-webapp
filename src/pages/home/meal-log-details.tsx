@@ -21,7 +21,15 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeftIcon, Loader2, Menu, Pencil, Trash } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  CookingPot,
+  Loader2,
+  Menu,
+  Pencil,
+  Trash,
+  Utensils,
+} from "lucide-react";
 import { useState } from "react";
 import { MealLogInfo } from "./components/meal-log-info";
 import { useNavigate, useParams } from "react-router";
@@ -36,7 +44,6 @@ import { toast } from "sonner";
 import { queryClient } from "@/lib/react-query";
 
 export function MealLogDetails() {
-  
   const navigate = useNavigate();
   const { mealLogId } = useParams<{ mealLogId: string }>();
 
@@ -79,6 +86,18 @@ export function MealLogDetails() {
     }
   }
 
+  function handleEditFoods() {
+    navigate(`/meal-logs/${mealLogId}/foods`, {
+      state: { backUrl: `/meal-logs/${mealLogId}` },
+    });
+  }
+
+  function handleEditMeals() {
+    navigate(`/meal-logs/${mealLogId}/meals`, {
+      state: { backUrl: `/meal-logs/${mealLogId}` },
+    });
+  }
+
   return (
     <div className="container mx-auto px-8 py-6 max-w-2xl">
       <div className="flex items-center justify-between mb-4">
@@ -116,6 +135,23 @@ export function MealLogDetails() {
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar registro de refeição
               </Button>
+
+              <Button
+                onClick={handleEditFoods}
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <Utensils className="mr-2 h-4 w-4" />
+                Editar comidas associadas
+              </Button>
+              <Button
+                onClick={handleEditMeals}
+                className="w-full justify-start"
+                variant="outline"
+              >
+                <CookingPot className="mr-2 h-4 w-4" />
+                Editar refeições associadas
+              </Button>
               <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
                 <AlertDialogTrigger asChild>
                   <Button
@@ -130,7 +166,7 @@ export function MealLogDetails() {
                     ) : (
                       <>
                         <Trash className="mr-2 h-4 w-4" />
-                        Excluir Registro de Refeição
+                        Excluir registro de refeição
                       </>
                     )}
                   </Button>
