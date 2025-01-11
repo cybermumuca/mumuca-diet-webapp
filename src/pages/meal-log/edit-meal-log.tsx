@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { MealLogNotFoundError } from "./errors/meal-log-not-found-error";
+import { MealLogNotFoundError } from "../home/errors/meal-log-not-found-error";
 import { z } from "zod";
 import { CalendarIcon, ChevronLeftIcon, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";

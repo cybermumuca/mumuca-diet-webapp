@@ -1,31 +1,31 @@
-import { listFoods, ListFoodsResponse } from "@/api/list-foods";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { ChevronLeftIcon, Loader2 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { z } from "zod";
-import { FoodCardSkeleton } from "../foods/components/food-card-skeleton";
-import { FoodCard } from "../foods/components/food-card";
-import {
-  addFoodsToMealLog,
-  AddFoodsToMealLogBody,
-} from "@/api/add-foods-to-meal-log";
-import { MealLogNotFoundError } from "./errors/meal-log-not-found-error";
-import { queryClient } from "@/lib/react-query";
-import {
-  removeFoodsFromMealLog,
-  RemoveFoodsFromMealLogBody,
-} from "@/api/remove-foods-from-meal-log";
-import { toast } from "sonner";
+import { MealLogNotFoundError } from "../home/errors/meal-log-not-found-error";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getMealLogFoods } from "@/api/get-meal-log-foods";
+import { useForm } from "react-hook-form";
+import { getMealLogMeals } from "@/api/get-meal-log-meals";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { listMeals, ListMealsResponse } from "@/api/list-meals";
+import {
+  removeMealsFromMealLog,
+  RemoveMealsFromMealLogBody,
+} from "@/api/remove-meals-from-meal-log";
+import {
+  addMealsToMealLog,
+  AddMealsToMealLogBody,
+} from "@/api/add-meals-to-meal-log";
+import { queryClient } from "@/lib/react-query";
+import { toast } from "sonner";
+import { ChevronLeftIcon, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MealCardSkeleton } from "../meals/components/meal-card-skeleton";
+import { MealCard } from "../meals/components/meal-card";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
-const editMealLogFoodsSchema = z.object({
-  foodIds: z
+const editMealLogMealsSchema = z.object({
+  mealIds: z
     .array(z.string().uuid())
     .refine(
       (arr) => arr.every((id) => z.string().uuid().safeParse(id).success),
@@ -35,9 +35,9 @@ const editMealLogFoodsSchema = z.object({
     ),
 });
 
-type EditMealLogFoodsSchema = z.infer<typeof editMealLogFoodsSchema>;
+type EditMealLogMealsSchema = z.infer<typeof editMealLogMealsSchema>;
 
-export function EditMealLogFoods() {
+export function EditMealLogMeals() {
   const location = useLocation();
   const backUrl: string = location.state?.backUrl ?? "/";
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export function EditMealLogFoods() {
     throw new MealLogNotFoundError();
   }
 
-  const [selectedFoods, setSelectedFoods] = useState<string[]>([]);
+  const [selectedMeals, setSelectedMeals] = useState<string[]>([]);
   const [defaultSynced, setDefaultSynced] = useState(false);
   const observerTarget = useRef(null);
 
@@ -57,26 +57,26 @@ export function EditMealLogFoods() {
     getValues,
     formState: { defaultValues, isSubmitting },
     handleSubmit,
-  } = useForm<EditMealLogFoodsSchema>({
-    resolver: zodResolver(editMealLogFoodsSchema),
+  } = useForm<EditMealLogMealsSchema>({
+    resolver: zodResolver(editMealLogMealsSchema),
   });
 
-  const { data: mealLogFoods, isLoading: isMealLogFoodsLoading } = useQuery({
-    queryKey: ["mealLogFoods", mealLogId],
-    queryFn: () => getMealLogFoods(mealLogId),
+  const { data: mealLogMeals, isLoading: isMealLogMealsLoading } = useQuery({
+    queryKey: ["mealLogMeals", mealLogId],
+    queryFn: () => getMealLogMeals(mealLogId),
   });
 
   const {
-    data: foodsData,
+    data: mealsData,
     isSuccess,
-    isFetching: isFetchingFoods,
+    isFetching: isFetchingMeals,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<ListFoodsResponse>({
-    queryKey: ["foods", "size-50"],
+  } = useInfiniteQuery<ListMealsResponse>({
+    queryKey: ["meals", "size-50"],
     queryFn: ({ pageParam = 0 }) =>
-      listFoods({ page: pageParam as number, size: 50 }),
+      listMeals({ page: pageParam as number, size: 50 }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
       const nextPage = lastPage.page.number + 1;
@@ -85,11 +85,11 @@ export function EditMealLogFoods() {
     refetchOnWindowFocus: true,
   });
 
-  function toggleSelection(foodId: string) {
-    setSelectedFoods((prev) =>
-      prev.includes(foodId)
-        ? prev.filter((id) => id !== foodId)
-        : [...prev, foodId]
+  function toggleSelection(mealId: string) {
+    setSelectedMeals((prev) =>
+      prev.includes(mealId)
+        ? prev.filter((id) => id !== mealId)
+        : [...prev, mealId]
     );
   }
 
@@ -116,67 +116,67 @@ export function EditMealLogFoods() {
   }, [handleObserver]);
 
   useEffect(() => {
-    setValue("foodIds", selectedFoods);
-  }, [selectedFoods, setValue]);
+    setValue("mealIds", selectedMeals);
+  }, [selectedMeals, setValue]);
 
   useEffect(() => {
     if (isSuccess && !defaultSynced) {
-      const defaultFoodIds = defaultValues?.foodIds ?? [];
-      setSelectedFoods(defaultFoodIds.filter(Boolean) as string[]);
+      const defaultMealIds = defaultValues?.mealIds ?? [];
+      setSelectedMeals(defaultMealIds.filter(Boolean) as string[]);
       setDefaultSynced(true);
     }
-  }, [isSuccess, defaultSynced, getValues, defaultValues?.foodIds]);
+  }, [isSuccess, defaultSynced, getValues, defaultValues?.mealIds]);
 
   useEffect(() => {
-    if (mealLogFoods) {
-      const foodIds = mealLogFoods.map((food) => food.id);
-      setSelectedFoods(foodIds);
-      setValue("foodIds", foodIds);
+    if (mealLogMeals) {
+      const mealIds = mealLogMeals.map((meal) => meal.id);
+      setSelectedMeals(mealIds);
+      setValue("mealIds", mealIds);
     }
-  }, [mealLogFoods, setValue]);
+  }, [mealLogMeals, setValue]);
 
   function handleBack() {
     navigate(backUrl);
   }
 
-  const { mutateAsync: addFoods } = useMutation({
-    mutationFn: (data: AddFoodsToMealLogBody) =>
-      addFoodsToMealLog(mealLogId, data),
+  const { mutateAsync: addMeals } = useMutation({
+    mutationFn: (data: AddMealsToMealLogBody) =>
+      addMealsToMealLog(mealLogId, data),
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["meal-logs"], active: true });
       queryClient.refetchQueries({ queryKey: ["meal-log", mealLogId] });
-      queryClient.refetchQueries({ queryKey: ["mealLogFoods", mealLogId] });
+      queryClient.refetchQueries({ queryKey: ["mealLogMeals", mealLogId] });
     },
   });
 
-  const { mutateAsync: removeFoods } = useMutation({
-    mutationFn: (data: RemoveFoodsFromMealLogBody) =>
-      removeFoodsFromMealLog(mealLogId, data),
+  const { mutateAsync: removeMeals } = useMutation({
+    mutationFn: (data: RemoveMealsFromMealLogBody) =>
+      removeMealsFromMealLog(mealLogId, data),
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["meal-logs"], active: true });
       queryClient.refetchQueries({ queryKey: ["meal-log", mealLogId] });
-      queryClient.refetchQueries({ queryKey: ["mealLogFoods", mealLogId] });
+      queryClient.refetchQueries({ queryKey: ["mealLogMeals", mealLogId] });
     },
   });
 
-  async function handleEditMealLogFoods(data: EditMealLogFoodsSchema) {
+  async function handleEditMealLogMeals(data: EditMealLogMealsSchema) {
     try {
-      const foodsToAdd = data.foodIds.filter((id) =>
-        mealLogFoods ? !mealLogFoods?.map((food) => food.id).includes(id) : true
+      const mealsToAdd = data.mealIds.filter((id) =>
+        mealLogMeals ? !mealLogMeals?.map((meal) => meal.id).includes(id) : true
       );
 
-      const foodsToRemove = mealLogFoods
-        ? mealLogFoods
-            ?.map((food) => food.id)
-            .filter((id: string) => !data.foodIds.includes(id))
+      const mealsToRemove = mealLogMeals
+        ? mealLogMeals
+            ?.map((meal) => meal.id)
+            .filter((id: string) => !data.mealIds.includes(id))
         : [];
 
-      if (foodsToAdd.length) {
-        await addFoods({ foodIds: foodsToAdd });
+      if (mealsToAdd.length) {
+        await addMeals({ mealIds: mealsToAdd });
       }
 
-      if (foodsToRemove.length) {
-        await removeFoods({ foodIds: foodsToRemove });
+      if (mealsToRemove.length) {
+        await removeMeals({ mealIds: mealsToRemove });
       }
 
       toast.success("Registro de refeição editada com sucesso");
@@ -190,7 +190,7 @@ export function EditMealLogFoods() {
     }
   }
 
-  if (isMealLogFoodsLoading) {
+  if (isMealLogMealsLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="animate-spin w-10 h-10 text-primary" />
@@ -198,8 +198,8 @@ export function EditMealLogFoods() {
     );
   }
 
-  const hasNoFoods =
-    !isFetchingFoods && foodsData?.pages[0]?.page.totalElements === 0;
+  const hasNoMeals =
+    !isFetchingMeals && mealsData?.pages[0]?.page.totalElements === 0;
 
   return (
     <div className="container mx-auto px-8 py-6 max-w-2xl">
@@ -215,46 +215,43 @@ export function EditMealLogFoods() {
             <ChevronLeftIcon className="translate-y-[2px]" />
           </Button>
           <h1 className="text-xl font-bold text-nowrap">
-            Editar Comidas Do Registro
+            Editar Refeições Do Registro
           </h1>
         </div>
       </div>
       <Separator className="my-4 bg-muted-foreground" />
-      <form onSubmit={handleSubmit(handleEditMealLogFoods)}>
+      <form onSubmit={handleSubmit(handleEditMealLogMeals)}>
         <div className="space-y-4">
           <div>
-            <Label className="block mb-4">Comidas disponiveis</Label>
+            <Label className="block mb-4">Refeições disponiveis</Label>
             <div className="max-h-[calc(90vh-195px)] overflow-y-scroll">
-              {isFetchingFoods ? (
+              {isFetchingMeals ? (
                 Array.from({ length: 10 }).map((_, index) => (
-                  <FoodCardSkeleton key={index} />
+                  <MealCardSkeleton key={index} />
                 ))
-              ) : hasNoFoods ? (
+              ) : hasNoMeals ? (
                 <div className="flex items-center justify-center h-[calc(100vh-310px)]">
                   <div className="text-center">
                     <h2 className="text-2xl font-semibold mb-2">
-                      Nenhuma comida encontrada
+                      Nenhuma refeição encontrada
                     </h2>
                     <p className="text-muted-foreground mb-4 text-sm">
-                      Adicione uma nova comida e ela aparecerá aqui.
+                      Adicione uma nova refeição e ela aparecerá aqui.
                     </p>
                   </div>
                 </div>
               ) : (
                 <>
-                  {foodsData?.pages.map((page, pageIndex) => (
+                  {mealsData?.pages.map((page, pageIndex) => (
                     <div key={pageIndex} className="space-y-2">
-                      {page.content.map((food) => (
-                        <FoodCard
-                          key={food.id}
-                          title={food.title}
-                          brand={food.brand}
-                          amount={food.portion.amount}
-                          unit={food.portion.unit}
-                          calories={food.nutritionalInformation.calories}
-                          onClick={() => toggleSelection(food.id)}
+                      {page.content.map((meal) => (
+                        <MealCard
+                          key={meal.id}
+                          title={meal.title}
+                          type={meal.type}
+                          onClick={() => toggleSelection(meal.id)}
                           className={`cursor-pointer ${
-                            selectedFoods.includes(food.id)
+                            selectedMeals.includes(meal.id)
                               ? "border-2 border-primary"
                               : "border"
                           }`}
@@ -265,14 +262,14 @@ export function EditMealLogFoods() {
                   {isFetchingNextPage && (
                     <div className="space-y-2">
                       {Array.from({ length: 3 }).map((_, index) => (
-                        <FoodCardSkeleton key={index} />
+                        <MealCardSkeleton key={index} />
                       ))}
                     </div>
                   )}
                   {!hasNextPage &&
-                    foodsData &&
-                    foodsData.pages[0].page.totalElements >= 10 &&
-                    foodsData.pages[0].content.length > 0 && (
+                    mealsData &&
+                    mealsData.pages[0].page.totalElements >= 10 &&
+                    mealsData.pages[0].content.length > 0 && (
                       <div className="text-center text-muted-foreground text-sm mt-4">
                         Não há mais itens para carregar
                       </div>

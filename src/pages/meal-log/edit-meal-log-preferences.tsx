@@ -6,8 +6,8 @@ import { getMealTypeLabel } from "@/utils/get-meal-type-label";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, Loader2, Plus } from "lucide-react";
 import { useNavigate } from "react-router";
-import { AddMealLogPreferenceDrawer } from "./components/add-meal-log-preference-drawer";
-import { EditMealLogPreferenceDrawer } from "./components/edit-meal-log-preference-drawer";
+import { AddMealLogPreferenceDrawer } from "../home/components/add-meal-log-preference-drawer";
+import { EditMealLogPreferenceDrawer } from "../home/components/edit-meal-log-preference-drawer";
 
 export function EditMealLogPreferences() {
   const navigate = useNavigate();

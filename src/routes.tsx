@@ -23,12 +23,12 @@ import { CompleteRegistration } from "./pages/complete-registration/complete-reg
 import { Notifications } from "./pages/settings/notifications";
 import { Account } from "./pages/settings/account";
 import { TermsAndPrivacy } from "./pages/settings/terms-and-privacy";
-import { EditMealLogPreferences } from "./pages/home/edit-meal-log-preferences";
+import { EditMealLogPreferences } from "./pages/meal-log/edit-meal-log-preferences";
 import { ScrollToTop } from "./scroll-to-top";
-import { MealLogDetails } from "./pages/home/meal-log-details";
-import { EditMealLog } from "./pages/home/edit-meal-log";
-import { EditMealLogFoods } from "./pages/home/edit-meal-log-foods";
-import { EditMealLogMeals } from "./pages/home/edit-meal-log-meals";
+import { MealLogDetails } from "./pages/meal-log/meal-log-details";
+import { EditMealLog } from "./pages/meal-log/edit-meal-log";
+import { EditMealLogFoods } from "./pages/meal-log/edit-meal-log-foods";
+import { EditMealLogMeals } from "./pages/meal-log/edit-meal-log-meals";
 
 // Auth routes
 const authRoutes: RouteObject = {

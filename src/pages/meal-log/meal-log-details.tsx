@@ -34,7 +34,7 @@ import { useState } from "react";
 import { MealLogInfo } from "./components/meal-log-info";
 import { useNavigate, useParams } from "react-router";
 import { z } from "zod";
-import { MealLogNotFoundError } from "./errors/meal-log-not-found-error";
+import { MealLogNotFoundError } from "../home/errors/meal-log-not-found-error";
 import { MealLogNutritionalInfo } from "./components/meal-log-nutritional-info";
 import { MealLogFoods } from "./components/meal-log-foods";
 import { MealLogMeals } from "./components/meal-log-meals";

@@ -3,7 +3,7 @@ import { getMealTypeLabel } from "@/utils/get-meal-type-label";
 import { useQuery } from "@tanstack/react-query";
 import { format, isToday, isTomorrow, isYesterday, parseISO } from "date-fns";
 import { AlarmClock, CalendarIcon } from "lucide-react";
-import { MealLogNotFoundError } from "../errors/meal-log-not-found-error";
+import { MealLogNotFoundError } from "../../home/errors/meal-log-not-found-error";
 import { MealLogInfoSkeleton } from "./meal-log-info-skeleton";
 
 type MealLogInfoProps = {
