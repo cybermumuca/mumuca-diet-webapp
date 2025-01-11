@@ -28,6 +28,7 @@ import { ScrollToTop } from "./scroll-to-top";
 import { MealLogDetails } from "./pages/home/meal-log-details";
 import { EditMealLog } from "./pages/home/edit-meal-log";
 import { EditMealLogFoods } from "./pages/home/edit-meal-log-foods";
+import { EditMealLogMeals } from "./pages/home/edit-meal-log-meals";
 
 // Auth routes
 const authRoutes: RouteObject = {
@@ -111,7 +112,7 @@ const mealLogRoutes: RouteObject[] = [
   { path: "/meal-logs/:mealLogId", element: <MealLogDetails /> },
   { path: "/meal-logs/:mealLogId/edit", element: <EditMealLog /> },
   { path: "/meal-logs/:mealLogId/foods", element: <EditMealLogFoods /> },
-  { path: "/meal-logs/:mealLogId/meals", element: <MealLogDetails /> },
+  { path: "/meal-logs/:mealLogId/meals", element: <EditMealLogMeals /> },
 ];
 
 export const router = createBrowserRouter([

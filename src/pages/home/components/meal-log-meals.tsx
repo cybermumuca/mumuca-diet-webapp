@@ -12,7 +12,7 @@ export function MealLogMeals({ mealLogId }: MealLogMealsProps) {
   const navigate = useNavigate();
 
   const { data: mealLogMeals, isLoading: isMealLogMealsLoading } = useQuery({
-    queryKey: ["mealLogMeals"],
+    queryKey: ["mealLogMeals", mealLogId],
     queryFn: () => getMealLogMeals(mealLogId),
   });
 
