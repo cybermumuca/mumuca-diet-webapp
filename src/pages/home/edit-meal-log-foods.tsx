@@ -91,8 +91,6 @@ export function EditMealLogFoods() {
         ? prev.filter((id) => id !== foodId)
         : [...prev, foodId]
     );
-
-    console.log(selectedFoods);
   }
 
   const handleObserver = useCallback(
@@ -134,7 +132,6 @@ export function EditMealLogFoods() {
       const foodIds = mealLogFoods.map((food) => food.id);
       setSelectedFoods(foodIds);
       setValue("foodIds", foodIds);
-      console.log(foodIds);
     }
   }, [mealLogFoods, setValue]);
 
@@ -148,6 +145,7 @@ export function EditMealLogFoods() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["meal-logs"], active: true });
       queryClient.refetchQueries({ queryKey: ["meal-log", mealLogId] });
+      queryClient.refetchQueries({ queryKey: ["mealLogFoods", mealLogId] });
     },
   });
 
@@ -157,12 +155,11 @@ export function EditMealLogFoods() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["meal-logs"], active: true });
       queryClient.refetchQueries({ queryKey: ["meal-log", mealLogId] });
+      queryClient.refetchQueries({ queryKey: ["mealLogFoods", mealLogId] });
     },
   });
 
   async function handleEditMealLogFoods(data: EditMealLogFoodsSchema) {
-    console.log(data);
-
     try {
       const foodsToAdd = data.foodIds.filter((id) =>
         mealLogFoods ? !mealLogFoods?.map((food) => food.id).includes(id) : true
@@ -223,7 +220,7 @@ export function EditMealLogFoods() {
         </div>
       </div>
       <Separator className="my-4 bg-muted-foreground" />
-      <form onSubmit={handleSubmit(handleEditMealLogFoods, console.log)}>
+      <form onSubmit={handleSubmit(handleEditMealLogFoods)}>
         <div className="space-y-4">
           <div>
             <Label className="block mb-4">Comidas disponiveis</Label>
