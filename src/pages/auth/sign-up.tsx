@@ -180,9 +180,6 @@ export function SignUp() {
                   "Cadastrar"
                 )}
               </Button>
-              <Button variant="outline" className="w-full" disabled>
-                Entrar com Google
-              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Já possui uma conta?{" "}
