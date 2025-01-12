@@ -117,9 +117,6 @@ export function SignIn() {
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "Entrar"}
               </Button>
-              <Button variant="outline" className="w-full" disabled>
-                Entrar com Google
-              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Ainda não tem uma conta?{" "}
