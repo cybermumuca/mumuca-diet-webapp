@@ -23,6 +23,7 @@ import { MealCardSkeleton } from "../meals/components/meal-card-skeleton";
 import { MealCard } from "../meals/components/meal-card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Helmet } from "react-helmet-async";
 
 const editMealLogMealsSchema = z.object({
   mealIds: z
@@ -202,95 +203,98 @@ export function EditMealLogMeals() {
     !isFetchingMeals && mealsData?.pages[0]?.page.totalElements === 0;
 
   return (
-    <div className="container mx-auto px-8 py-6 max-w-2xl">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handleBack}
-            variant="ghost"
-            size="icon"
-          >
-            <ChevronLeftIcon className="translate-y-[2px]" />
-          </Button>
-          <h1 className="text-xl font-bold text-nowrap">
-            Editar Refeições Do Registro
-          </h1>
-        </div>
-      </div>
-      <Separator className="my-4 bg-muted-foreground" />
-      <form onSubmit={handleSubmit(handleEditMealLogMeals)}>
-        <div className="space-y-4">
-          <div>
-            <Label className="block mb-4">Refeições disponiveis</Label>
-            <div className="max-h-[calc(90vh-195px)] overflow-y-scroll">
-              {isFetchingMeals ? (
-                Array.from({ length: 10 }).map((_, index) => (
-                  <MealCardSkeleton key={index} />
-                ))
-              ) : hasNoMeals ? (
-                <div className="flex items-center justify-center h-[calc(100vh-310px)]">
-                  <div className="text-center">
-                    <h2 className="text-2xl font-semibold mb-2">
-                      Nenhuma refeição encontrada
-                    </h2>
-                    <p className="text-muted-foreground mb-4 text-sm">
-                      Adicione uma nova refeição e ela aparecerá aqui.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {mealsData?.pages.map((page, pageIndex) => (
-                    <div key={pageIndex} className="space-y-2">
-                      {page.content.map((meal) => (
-                        <MealCard
-                          key={meal.id}
-                          title={meal.title}
-                          type={meal.type}
-                          onClick={() => toggleSelection(meal.id)}
-                          className={`cursor-pointer ${
-                            selectedMeals.includes(meal.id)
-                              ? "border-2 border-primary"
-                              : "border"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                  {isFetchingNextPage && (
-                    <div className="space-y-2">
-                      {Array.from({ length: 3 }).map((_, index) => (
-                        <MealCardSkeleton key={index} />
-                      ))}
-                    </div>
-                  )}
-                  {!hasNextPage &&
-                    mealsData &&
-                    mealsData.pages[0].page.totalElements >= 10 &&
-                    mealsData.pages[0].content.length > 0 && (
-                      <div className="text-center text-muted-foreground text-sm mt-4">
-                        Não há mais itens para carregar
-                      </div>
-                    )}
-                  <div ref={observerTarget} />
-                </>
-              )}
-            </div>
+    <>
+      <Helmet title="Editar Refeições Associadas ao Registro de Refeição" />
+      <div className="container mx-auto px-8 py-6 max-w-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handleBack}
+              variant="ghost"
+              size="icon"
+            >
+              <ChevronLeftIcon className="translate-y-[2px]" />
+            </Button>
+            <h1 className="text-xl font-bold text-nowrap">
+              Editar Refeições Do Registro
+            </h1>
           </div>
         </div>
+        <Separator className="my-4 bg-muted-foreground" />
+        <form onSubmit={handleSubmit(handleEditMealLogMeals)}>
+          <div className="space-y-4">
+            <div>
+              <Label className="block mb-4">Refeições disponiveis</Label>
+              <div className="max-h-[calc(90vh-195px)] overflow-y-scroll">
+                {isFetchingMeals ? (
+                  Array.from({ length: 10 }).map((_, index) => (
+                    <MealCardSkeleton key={index} />
+                  ))
+                ) : hasNoMeals ? (
+                  <div className="flex items-center justify-center h-[calc(100vh-310px)]">
+                    <div className="text-center">
+                      <h2 className="text-2xl font-semibold mb-2">
+                        Nenhuma refeição encontrada
+                      </h2>
+                      <p className="text-muted-foreground mb-4 text-sm">
+                        Adicione uma nova refeição e ela aparecerá aqui.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {mealsData?.pages.map((page, pageIndex) => (
+                      <div key={pageIndex} className="space-y-2">
+                        {page.content.map((meal) => (
+                          <MealCard
+                            key={meal.id}
+                            title={meal.title}
+                            type={meal.type}
+                            onClick={() => toggleSelection(meal.id)}
+                            className={`cursor-pointer ${
+                              selectedMeals.includes(meal.id)
+                                ? "border-2 border-primary"
+                                : "border"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                    {isFetchingNextPage && (
+                      <div className="space-y-2">
+                        {Array.from({ length: 3 }).map((_, index) => (
+                          <MealCardSkeleton key={index} />
+                        ))}
+                      </div>
+                    )}
+                    {!hasNextPage &&
+                      mealsData &&
+                      mealsData.pages[0].page.totalElements >= 10 &&
+                      mealsData.pages[0].content.length > 0 && (
+                        <div className="text-center text-muted-foreground text-sm mt-4">
+                          Não há mais itens para carregar
+                        </div>
+                      )}
+                    <div ref={observerTarget} />
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
 
-        <div className="mt-4">
-          <Button
-            type="submit"
-            className="w-full font-semibold"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? <Loader2 className="animate-spin" /> : "Salvar"}
-          </Button>
-        </div>
-      </form>
-    </div>
+          <div className="mt-4">
+            <Button
+              type="submit"
+              className="w-full font-semibold"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <Loader2 className="animate-spin" /> : "Salvar"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 }

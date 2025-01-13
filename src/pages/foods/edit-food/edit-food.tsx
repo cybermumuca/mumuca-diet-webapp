@@ -20,6 +20,7 @@ import { FoodBasicInformationStep } from "../add-food/food-basic-information-ste
 import { FoodPortionStep } from "../add-food/food-portion-step";
 import { FoodNutritionalInformationStep } from "../add-food/food-nutritional-information-step";
 import { Food } from "@/types/food";
+import { Helmet } from "react-helmet-async";
 
 type Step = "basicInfo" | "portions" | "nutritionalInfo";
 
@@ -294,59 +295,62 @@ export function EditFood() {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(handleEditFood)}
-        className="max-w-2xl mx-auto min-h-screen p-6"
-      >
-        <div className="flex items-center justify-start gap-2 mb-4">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handlePreviousStep}
-            variant="ghost"
-          >
-            <ChevronLeftIcon className="translate-y-[1px]" />
-          </Button>
-          <h1 className="text-2xl font-bold">Editar Comida</h1>
-        </div>
-        <ProgressIndicator
-          currentStep={steps.indexOf(step) + 1}
-          totalSteps={steps.length}
-        />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
-            {step === "basicInfo" && <FoodBasicInformationStep />}
-            {step === "portions" && <FoodPortionStep />}
-            {step === "nutritionalInfo" && <FoodNutritionalInformationStep />}
-          </motion.div>
-        </AnimatePresence>
+    <>
+      <Helmet title="Editar Comida" />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(handleEditFood)}
+          className="max-w-2xl mx-auto min-h-screen p-6"
+        >
+          <div className="flex items-center justify-start gap-2 mb-4">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handlePreviousStep}
+              variant="ghost"
+            >
+              <ChevronLeftIcon className="translate-y-[1px]" />
+            </Button>
+            <h1 className="text-2xl font-bold">Editar Comida</h1>
+          </div>
+          <ProgressIndicator
+            currentStep={steps.indexOf(step) + 1}
+            totalSteps={steps.length}
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              {step === "basicInfo" && <FoodBasicInformationStep />}
+              {step === "portions" && <FoodPortionStep />}
+              {step === "nutritionalInfo" && <FoodNutritionalInformationStep />}
+            </motion.div>
+          </AnimatePresence>
 
-        <div className="mt-6 flex justify-center">
-          <Button
-            type="button"
-            className="w-full font-semibold"
-            onClick={handleNextStep}
-            disabled={isEditingFood}
-          >
-            {isEditingFood ? (
-              <>
-                <Loader2 className="animate-spin" /> Editando...
-              </>
-            ) : step === "nutritionalInfo" ? (
-              "Editar comida"
-            ) : (
-              "Avançar"
-            )}
-          </Button>
-        </div>
-      </form>
-    </FormProvider>
+          <div className="mt-6 flex justify-center">
+            <Button
+              type="button"
+              className="w-full font-semibold"
+              onClick={handleNextStep}
+              disabled={isEditingFood}
+            >
+              {isEditingFood ? (
+                <>
+                  <Loader2 className="animate-spin" /> Editando...
+                </>
+              ) : step === "nutritionalInfo" ? (
+                "Editar comida"
+              ) : (
+                "Avançar"
+              )}
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
+    </>
   );
 }

@@ -18,6 +18,7 @@ import { MealBasicInformationStep } from "../add-meal/meal-basic-information-ste
 import { MealAddFoodsStep } from "../add-meal/meal-add-foods-step";
 import { removeFoodsFromMeal } from "@/api/remove-foods-from-meal";
 import { addFoodsToMeal } from "@/api/add-foods-to-meal";
+import { Helmet } from "react-helmet-async";
 
 type Step = "basicInfo" | "addFood";
 
@@ -234,58 +235,61 @@ export function EditMeal() {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(handleEditMeal)}
-        className="max-w-2xl mx-auto min-h-screen p-6"
-      >
-        <div className="flex items-center justify-start gap-2 mb-4">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handlePreviousStep}
-            variant="ghost"
-          >
-            <ChevronLeftIcon className="translate-y-[1px]" />
-          </Button>
-          <h1 className="text-2xl font-bold">Editar Refeição</h1>
-        </div>
-        <ProgressIndicator
-          currentStep={steps.indexOf(step) + 1}
-          totalSteps={steps.length}
-        />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
-            {step === "basicInfo" && <MealBasicInformationStep />}
-            {step === "addFood" && <MealAddFoodsStep />}
-          </motion.div>
-        </AnimatePresence>
+    <>
+      <Helmet title="Editar Refeição" />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(handleEditMeal)}
+          className="max-w-2xl mx-auto min-h-screen p-6"
+        >
+          <div className="flex items-center justify-start gap-2 mb-4">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handlePreviousStep}
+              variant="ghost"
+            >
+              <ChevronLeftIcon className="translate-y-[1px]" />
+            </Button>
+            <h1 className="text-2xl font-bold">Editar Refeição</h1>
+          </div>
+          <ProgressIndicator
+            currentStep={steps.indexOf(step) + 1}
+            totalSteps={steps.length}
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              {step === "basicInfo" && <MealBasicInformationStep />}
+              {step === "addFood" && <MealAddFoodsStep />}
+            </motion.div>
+          </AnimatePresence>
 
-        <div className="mt-6 flex justify-center">
-          <Button
-            type="button"
-            className="w-full font-semibold"
-            onClick={handleNextStep}
-            disabled={isEditingMeal}
-          >
-            {isEditingMeal ? (
-              <>
-                <Loader2 className="animate-spin" /> Editando...
-              </>
-            ) : step === "addFood" ? (
-              "Editar refeição"
-            ) : (
-              "Avançar"
-            )}
-          </Button>
-        </div>
-      </form>
-    </FormProvider>
+          <div className="mt-6 flex justify-center">
+            <Button
+              type="button"
+              className="w-full font-semibold"
+              onClick={handleNextStep}
+              disabled={isEditingMeal}
+            >
+              {isEditingMeal ? (
+                <>
+                  <Loader2 className="animate-spin" /> Editando...
+                </>
+              ) : step === "addFood" ? (
+                "Editar refeição"
+              ) : (
+                "Avançar"
+              )}
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
+    </>
   );
 }

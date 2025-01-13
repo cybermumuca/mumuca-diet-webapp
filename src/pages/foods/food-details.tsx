@@ -32,6 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 export function FoodDetails() {
   const location = useLocation();
@@ -83,81 +84,86 @@ export function FoodDetails() {
   }
 
   return (
-    <div className="container mx-auto px-8 py-6 max-w-2xl">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handleBack}
-            variant="ghost"
-            size="icon"
-          >
-            <ChevronLeftIcon className="translate-y-[2px]" />
-          </Button>
-          <h1 className="text-2xl font-bold text-nowrap">Visualizar Comida</h1>
-        </div>
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu />
+    <>
+      <Helmet title="Visualizar Comida" />
+      <div className="container mx-auto px-8 py-6 max-w-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handleBack}
+              variant="ghost"
+              size="icon"
+            >
+              <ChevronLeftIcon className="translate-y-[2px]" />
             </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Opções</DrawerTitle>
-              <DrawerDescription>
-                Escolha uma ação para esta comida.
-              </DrawerDescription>
-            </DrawerHeader>
-            <div className="p-4 space-y-4">
-              <Button
-                onClick={handleEdit}
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Editar Comida
+            <h1 className="text-2xl font-bold text-nowrap">
+              Visualizar Comida
+            </h1>
+          </div>
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu />
               </Button>
-              <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    className="w-full justify-start"
-                    variant="destructive"
-                  >
-                    <Trash className="mr-2 h-4 w-4" />
-                    Excluir Comida
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      A comida será excluída permanentemente.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>
-                      Excluir comida
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant="outline">Cancelar</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Opções</DrawerTitle>
+                <DrawerDescription>
+                  Escolha uma ação para esta comida.
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 space-y-4">
+                <Button
+                  onClick={handleEdit}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Editar Comida
+                </Button>
+                <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="w-full justify-start"
+                      variant="destructive"
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      Excluir Comida
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        A comida será excluída permanentemente.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>
+                        Excluir comida
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <DrawerFooter>
+                <DrawerClose asChild>
+                  <Button variant="outline">Cancelar</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        </div>
+        <Separator className="my-4 bg-muted-foreground" />
+        <FoodInfo foodId={foodId} />
+        <div className="mt-6">
+          <FoodMeals foodId={foodId} />
+        </div>
       </div>
-      <Separator className="my-4 bg-muted-foreground" />
-      <FoodInfo foodId={foodId} />
-      <div className="mt-6">
-        <FoodMeals foodId={foodId} />
-      </div>
-    </div>
+    </>
   );
 }

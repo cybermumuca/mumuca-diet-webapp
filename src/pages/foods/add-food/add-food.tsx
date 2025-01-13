@@ -17,6 +17,7 @@ import { ProgressIndicator } from "@/components/progress-indicator";
 import { ChevronLeftIcon, Loader2 } from "lucide-react";
 import { api } from "@/lib/axios";
 import { isAxiosError } from "axios";
+import { Helmet } from "react-helmet-async";
 
 type Step = "basicInfo" | "portions" | "nutritionalInfo";
 
@@ -27,8 +28,31 @@ const createFoodSchema = z.object({
   brand: z.string().optional(),
   description: z.string().optional(),
   portion: z.object({
-    amount: z.number({ coerce: true, message: "Deve ser um inteiro positivo" }).positive("A quantidade deve ser maior que zero").default(0),
-    unit: z.enum(["GRAM", "MILLIGRAM", "KILOGRAM", "MICROGRAM", "MILLILITER", "LITER", "CALORIE", "KILOJOULE", "INTERNATIONAL_UNIT", "OUNCE", "CUP", "TABLESPOON", "TEASPOON", "SLICE", "PIECE", "BOWL"], { message: "Unidade inválida" }),
+    amount: z
+      .number({ coerce: true, message: "Deve ser um inteiro positivo" })
+      .positive("A quantidade deve ser maior que zero")
+      .default(0),
+    unit: z.enum(
+      [
+        "GRAM",
+        "MILLIGRAM",
+        "KILOGRAM",
+        "MICROGRAM",
+        "MILLILITER",
+        "LITER",
+        "CALORIE",
+        "KILOJOULE",
+        "INTERNATIONAL_UNIT",
+        "OUNCE",
+        "CUP",
+        "TABLESPOON",
+        "TEASPOON",
+        "SLICE",
+        "PIECE",
+        "BOWL",
+      ],
+      { message: "Unidade inválida" }
+    ),
     description: z.string().optional(),
   }),
   nutritionalInformation: z.object({
@@ -177,66 +201,69 @@ export function AddFood() {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(handleAddFood)}
-        className="max-w-2xl mx-auto min-h-screen p-6"
-      >
-        <div className="flex items-center justify-start gap-2 mb-4">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handlePreviousStep}
-            variant="ghost"
-          >
-            <ChevronLeftIcon className="translate-y-[1px]" />
-          </Button>
-          <h1 className="text-2xl font-bold">Adicionar Comida</h1>
-        </div>
-        <ProgressIndicator
-          currentStep={steps.indexOf(step) + 1}
-          totalSteps={steps.length}
-        />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
-            {step === "basicInfo" && <FoodBasicInformationStep />}
-            {step === "portions" && <FoodPortionStep />}
-            {step === "nutritionalInfo" && <FoodNutritionalInformationStep />}
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="mt-6 flex justify-center">
-          {step !== "nutritionalInfo" ? (
+    <>
+      <Helmet title="Adicionar Comida" />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(handleAddFood)}
+          className="max-w-2xl mx-auto min-h-screen p-6"
+        >
+          <div className="flex items-center justify-start gap-2 mb-4">
             <Button
               type="button"
-              className="w-full font-semibold"
-              onClick={handleNextStep}
+              className="hover:bg-transparent"
+              onClick={handlePreviousStep}
+              variant="ghost"
             >
-              Avançar
+              <ChevronLeftIcon className="translate-y-[1px]" />
             </Button>
-          ) : (
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={methods.formState.isSubmitting}
+            <h1 className="text-2xl font-bold">Adicionar Comida</h1>
+          </div>
+          <ProgressIndicator
+            currentStep={steps.indexOf(step) + 1}
+            totalSteps={steps.length}
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
             >
-              {methods.formState.isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin" /> Adicionando...
-                </>
-              ) : (
-                "Adicionar comida"
-              )}
-            </Button>
-          )}
-        </div>
-      </form>
-    </FormProvider>
+              {step === "basicInfo" && <FoodBasicInformationStep />}
+              {step === "portions" && <FoodPortionStep />}
+              {step === "nutritionalInfo" && <FoodNutritionalInformationStep />}
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="mt-6 flex justify-center">
+            {step !== "nutritionalInfo" ? (
+              <Button
+                type="button"
+                className="w-full font-semibold"
+                onClick={handleNextStep}
+              >
+                Avançar
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={methods.formState.isSubmitting}
+              >
+                {methods.formState.isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin" /> Adicionando...
+                  </>
+                ) : (
+                  "Adicionar comida"
+                )}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
+    </>
   );
 }

@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getMealLogFoods } from "@/api/get-meal-log-foods";
+import { Helmet } from "react-helmet-async";
 
 const editMealLogFoodsSchema = z.object({
   foodIds: z
@@ -202,98 +203,101 @@ export function EditMealLogFoods() {
     !isFetchingFoods && foodsData?.pages[0]?.page.totalElements === 0;
 
   return (
-    <div className="container mx-auto px-8 py-6 max-w-2xl">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handleBack}
-            variant="ghost"
-            size="icon"
-          >
-            <ChevronLeftIcon className="translate-y-[2px]" />
-          </Button>
-          <h1 className="text-xl font-bold text-nowrap">
-            Editar Comidas Do Registro
-          </h1>
-        </div>
-      </div>
-      <Separator className="my-4 bg-muted-foreground" />
-      <form onSubmit={handleSubmit(handleEditMealLogFoods)}>
-        <div className="space-y-4">
-          <div>
-            <Label className="block mb-4">Comidas disponiveis</Label>
-            <div className="max-h-[calc(90vh-195px)] overflow-y-scroll">
-              {isFetchingFoods ? (
-                Array.from({ length: 10 }).map((_, index) => (
-                  <FoodCardSkeleton key={index} />
-                ))
-              ) : hasNoFoods ? (
-                <div className="flex items-center justify-center h-[calc(100vh-310px)]">
-                  <div className="text-center">
-                    <h2 className="text-2xl font-semibold mb-2">
-                      Nenhuma comida encontrada
-                    </h2>
-                    <p className="text-muted-foreground mb-4 text-sm">
-                      Adicione uma nova comida e ela aparecerá aqui.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {foodsData?.pages.map((page, pageIndex) => (
-                    <div key={pageIndex} className="space-y-2">
-                      {page.content.map((food) => (
-                        <FoodCard
-                          key={food.id}
-                          title={food.title}
-                          brand={food.brand}
-                          amount={food.portion.amount}
-                          unit={food.portion.unit}
-                          calories={food.nutritionalInformation.calories}
-                          onClick={() => toggleSelection(food.id)}
-                          className={`cursor-pointer ${
-                            selectedFoods.includes(food.id)
-                              ? "border-2 border-primary"
-                              : "border"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                  {isFetchingNextPage && (
-                    <div className="space-y-2">
-                      {Array.from({ length: 3 }).map((_, index) => (
-                        <FoodCardSkeleton key={index} />
-                      ))}
-                    </div>
-                  )}
-                  {!hasNextPage &&
-                    foodsData &&
-                    foodsData.pages[0].page.totalElements >= 10 &&
-                    foodsData.pages[0].content.length > 0 && (
-                      <div className="text-center text-muted-foreground text-sm mt-4">
-                        Não há mais itens para carregar
-                      </div>
-                    )}
-                  <div ref={observerTarget} />
-                </>
-              )}
-            </div>
+    <>
+      <Helmet title="Editar Comidas Associadas ao Registro de Refeição" />
+      <div className="container mx-auto px-8 py-6 max-w-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handleBack}
+              variant="ghost"
+              size="icon"
+            >
+              <ChevronLeftIcon className="translate-y-[2px]" />
+            </Button>
+            <h1 className="text-xl font-bold text-nowrap">
+              Editar Comidas Do Registro
+            </h1>
           </div>
         </div>
+        <Separator className="my-4 bg-muted-foreground" />
+        <form onSubmit={handleSubmit(handleEditMealLogFoods)}>
+          <div className="space-y-4">
+            <div>
+              <Label className="block mb-4">Comidas disponiveis</Label>
+              <div className="max-h-[calc(90vh-195px)] overflow-y-scroll">
+                {isFetchingFoods ? (
+                  Array.from({ length: 10 }).map((_, index) => (
+                    <FoodCardSkeleton key={index} />
+                  ))
+                ) : hasNoFoods ? (
+                  <div className="flex items-center justify-center h-[calc(100vh-310px)]">
+                    <div className="text-center">
+                      <h2 className="text-2xl font-semibold mb-2">
+                        Nenhuma comida encontrada
+                      </h2>
+                      <p className="text-muted-foreground mb-4 text-sm">
+                        Adicione uma nova comida e ela aparecerá aqui.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {foodsData?.pages.map((page, pageIndex) => (
+                      <div key={pageIndex} className="space-y-2">
+                        {page.content.map((food) => (
+                          <FoodCard
+                            key={food.id}
+                            title={food.title}
+                            brand={food.brand}
+                            amount={food.portion.amount}
+                            unit={food.portion.unit}
+                            calories={food.nutritionalInformation.calories}
+                            onClick={() => toggleSelection(food.id)}
+                            className={`cursor-pointer ${
+                              selectedFoods.includes(food.id)
+                                ? "border-2 border-primary"
+                                : "border"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                    {isFetchingNextPage && (
+                      <div className="space-y-2">
+                        {Array.from({ length: 3 }).map((_, index) => (
+                          <FoodCardSkeleton key={index} />
+                        ))}
+                      </div>
+                    )}
+                    {!hasNextPage &&
+                      foodsData &&
+                      foodsData.pages[0].page.totalElements >= 10 &&
+                      foodsData.pages[0].content.length > 0 && (
+                        <div className="text-center text-muted-foreground text-sm mt-4">
+                          Não há mais itens para carregar
+                        </div>
+                      )}
+                    <div ref={observerTarget} />
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
 
-        <div className="mt-4">
-          <Button
-            type="submit"
-            className="w-full font-semibold"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? <Loader2 className="animate-spin" /> : "Salvar"}
-          </Button>
-        </div>
-      </form>
-    </div>
+          <div className="mt-4">
+            <Button
+              type="submit"
+              className="w-full font-semibold"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <Loader2 className="animate-spin" /> : "Salvar"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 }

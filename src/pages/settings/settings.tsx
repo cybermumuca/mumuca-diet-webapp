@@ -23,6 +23,7 @@ import { getProfile } from "@/api/get-profile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { signOut } from "@/api/sign-out";
 import { queryClient } from "@/lib/react-query";
+import { Helmet } from "react-helmet-async";
 
 export function Settings() {
   const navigate = useNavigate();
@@ -87,63 +88,69 @@ export function Settings() {
   ];
 
   return (
-    <div className="container mx-auto max-w-2xl p-4 space-y-6 mb-10">
-      <div className="flex flex-col justify-center items-center">
-        <ProfilePicture size="xl" />
-        {isProfileLoading && <Skeleton className="mt-4 h-8 w-52" />}
-        {profile && !isProfileLoading && (
-          <h1 className="text-xl font-bold mt-4">
-            {profile.firstName.concat(" ", profile.lastName)}
-          </h1>
-        )}
-      </div>
+    <>
+      <Helmet title="Configurações" />
+      <div className="container mx-auto max-w-2xl p-4 space-y-6 mb-10">
+        <div className="flex flex-col justify-center items-center">
+          <ProfilePicture size="xl" />
+          {isProfileLoading && <Skeleton className="mt-4 h-8 w-52" />}
+          {profile && !isProfileLoading && (
+            <h1 className="text-xl font-bold mt-4">
+              {profile.firstName.concat(" ", profile.lastName)}
+            </h1>
+          )}
+        </div>
 
-      <div className="grid gap-4">
-        {settingsSections.map((section, index) => (
-          <Card
-            key={index}
-            className="cursor-pointer hover:bg-accent transition-colors"
-            onClick={() => navigate(section.route)}
-          >
-            <CardHeader className="flex flex-row items-center space-y-0">
-              <section.icon className="w-6 h-6 mr-4" />
-              <div>
-                <CardTitle className="text-lg">{section.title}</CardTitle>
-                <CardDescription>{section.description}</CardDescription>
+        <div className="grid gap-4">
+          {settingsSections.map((section, index) => (
+            <Card
+              key={index}
+              className="cursor-pointer hover:bg-accent transition-colors"
+              onClick={() => navigate(section.route)}
+            >
+              <CardHeader className="flex flex-row items-center space-y-0">
+                <section.icon className="w-6 h-6 mr-4" />
+                <div>
+                  <CardTitle className="text-lg">{section.title}</CardTitle>
+                  <CardDescription>{section.description}</CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
+          ))}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <div className="flex items-center">
+                <Paintbrush className="w-6 h-6 mr-4" />
+                <div>
+                  <CardTitle className="text-lg">Modo Escuro</CardTitle>
+                  <CardDescription>
+                    Alternar entre temas claro e escuro
+                  </CardDescription>
+                </div>
               </div>
+              <Switch
+                checked={isDarkMode}
+                onCheckedChange={handleThemeToggle}
+              />
             </CardHeader>
           </Card>
-        ))}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <div className="flex items-center">
-              <Paintbrush className="w-6 h-6 mr-4" />
-              <div>
-                <CardTitle className="text-lg">Modo Escuro</CardTitle>
-                <CardDescription>
-                  Alternar entre temas claro e escuro
-                </CardDescription>
-              </div>
-            </div>
-            <Switch checked={isDarkMode} onCheckedChange={handleThemeToggle} />
-          </CardHeader>
-        </Card>
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={handleLogout}
-          disabled={isMetendoOPe}
-        >
-          {isMetendoOPe ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            <>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sair
-            </>
-          )}
-        </Button>
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={handleLogout}
+            disabled={isMetendoOPe}
+          >
+            {isMetendoOPe ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sair
+              </>
+            )}
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { MealBasicInformationStep } from "./meal-basic-information-step";
 import { MealAddFoodsStep } from "./meal-add-foods-step";
+import { Helmet } from "react-helmet-async";
 
 type Step = "basicInfo" | "addFood";
 
@@ -162,65 +163,68 @@ export function AddMeal() {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(handleAddMeal)}
-        className="max-w-2xl mx-auto min-h-screen p-6"
-      >
-        <div className="flex items-center justify-start gap-2 mb-4">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handlePreviousStep}
-            variant="ghost"
-          >
-            <ChevronLeftIcon className="translate-y-[1px]" />
-          </Button>
-          <h1 className="text-2xl font-bold">Adicionar Refeição</h1>
-        </div>
-        <ProgressIndicator
-          currentStep={steps.indexOf(step) + 1}
-          totalSteps={steps.length}
-        />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
-            {step === "basicInfo" && <MealBasicInformationStep />}
-            {step === "addFood" && <MealAddFoodsStep />}
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="mt-6 flex justify-center">
-          {step !== "addFood" ? (
+    <>
+      <Helmet title="Adicionar Refeição" />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(handleAddMeal)}
+          className="max-w-2xl mx-auto min-h-screen p-6"
+        >
+          <div className="flex items-center justify-start gap-2 mb-4">
             <Button
               type="button"
-              className="w-full font-semibold"
-              onClick={handleNextStep}
+              className="hover:bg-transparent"
+              onClick={handlePreviousStep}
+              variant="ghost"
             >
-              Avançar
+              <ChevronLeftIcon className="translate-y-[1px]" />
             </Button>
-          ) : (
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={methods.formState.isSubmitting}
+            <h1 className="text-2xl font-bold">Adicionar Refeição</h1>
+          </div>
+          <ProgressIndicator
+            currentStep={steps.indexOf(step) + 1}
+            totalSteps={steps.length}
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
             >
-              {methods.formState.isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin" /> Adicionando...
-                </>
-              ) : (
-                "Adicionar Refeição"
-              )}
-            </Button>
-          )}
-        </div>
-      </form>
-    </FormProvider>
+              {step === "basicInfo" && <MealBasicInformationStep />}
+              {step === "addFood" && <MealAddFoodsStep />}
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="mt-6 flex justify-center">
+            {step !== "addFood" ? (
+              <Button
+                type="button"
+                className="w-full font-semibold"
+                onClick={handleNextStep}
+              >
+                Avançar
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={methods.formState.isSubmitting}
+              >
+                {methods.formState.isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin" /> Adicionando...
+                  </>
+                ) : (
+                  "Adicionar Refeição"
+                )}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
+    </>
   );
 }

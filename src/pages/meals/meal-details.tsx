@@ -33,6 +33,7 @@ import { queryClient } from "@/lib/react-query";
 import { toast } from "sonner";
 import { deleteMeal } from "@/api/delete-meal";
 import { useMutation } from "@tanstack/react-query";
+import { Helmet } from "react-helmet-async";
 
 export function MealDetails() {
   const location = useLocation();
@@ -84,82 +85,85 @@ export function MealDetails() {
   }
 
   return (
-    <div className="container mx-auto px-8 py-6 max-w-2xl">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handleBack}
-            variant="ghost"
-            size="icon"
-          >
-            <ChevronLeftIcon className="translate-y-[2px]" />
-          </Button>
-          <h1 className="text-2xl font-bold text-nowrap">
-            Visualizar Refeição
-          </h1>
-        </div>
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu />
+    <>
+      <Helmet title="Visualizar Refeição" />
+      <div className="container mx-auto px-8 py-6 max-w-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handleBack}
+              variant="ghost"
+              size="icon"
+            >
+              <ChevronLeftIcon className="translate-y-[2px]" />
             </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Opções</DrawerTitle>
-              <DrawerDescription>
-                Escolha uma ação para esta refeição.
-              </DrawerDescription>
-            </DrawerHeader>
-            <div className="p-4 space-y-4">
-              <Button
-                onClick={handleEdit}
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Editar Refeição
+            <h1 className="text-2xl font-bold text-nowrap">
+              Visualizar Refeição
+            </h1>
+          </div>
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu />
               </Button>
-              <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    className="w-full justify-start"
-                    variant="destructive"
-                  >
-                    <Trash className="mr-2 h-4 w-4" />
-                    Excluir Refeição
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      A refeição será excluída permanentemente.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>
-                      Excluir refeição
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant="outline">Cancelar</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Opções</DrawerTitle>
+                <DrawerDescription>
+                  Escolha uma ação para esta refeição.
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 space-y-4">
+                <Button
+                  onClick={handleEdit}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Editar Refeição
+                </Button>
+                <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="w-full justify-start"
+                      variant="destructive"
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      Excluir Refeição
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        A refeição será excluída permanentemente.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>
+                        Excluir refeição
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <DrawerFooter>
+                <DrawerClose asChild>
+                  <Button variant="outline">Cancelar</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        </div>
+        <Separator className="my-4 bg-muted-foreground" />
+        <MealInfo mealId={mealId} />
+        <MealNutritionalInformation mealId={mealId} />
+        <MealFoods mealId={mealId} />
       </div>
-      <Separator className="my-4 bg-muted-foreground" />
-      <MealInfo mealId={mealId} />
-      <MealNutritionalInformation mealId={mealId} />
-      <MealFoods mealId={mealId} />
-    </div>
+    </>
   );
 }

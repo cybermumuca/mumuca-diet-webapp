@@ -116,7 +116,7 @@ export function SignUp() {
 
   return (
     <>
-      <Helmet title="Cadastro" />
+      <Helmet title="Registro" />
       <Card className="mx-auto max-w-sm max-[400px]:w-[340px]">
         <CardHeader>
           <CardTitle className="text-xl">Cadastro</CardTitle>

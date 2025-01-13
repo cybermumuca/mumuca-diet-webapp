@@ -42,6 +42,7 @@ import { deleteMealLog } from "@/api/delete-meal-log";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { queryClient } from "@/lib/react-query";
+import { Helmet } from "react-helmet-async";
 
 export function MealLogDetails() {
   const navigate = useNavigate();
@@ -99,107 +100,112 @@ export function MealLogDetails() {
   }
 
   return (
-    <div className="container mx-auto px-8 py-6 max-w-2xl">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            className="hover:bg-transparent"
-            onClick={handleBack}
-            variant="ghost"
-            size="icon"
-          >
-            <ChevronLeftIcon className="translate-y-[2px]" />
-          </Button>
-          <h1 className="text-xl font-bold text-nowrap">Visualizar Registro</h1>
-        </div>
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu />
+    <>
+      <Helmet title="Visualizar Registro de Refeição" />
+      <div className="container mx-auto px-8 py-6 max-w-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              className="hover:bg-transparent"
+              onClick={handleBack}
+              variant="ghost"
+              size="icon"
+            >
+              <ChevronLeftIcon className="translate-y-[2px]" />
             </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Opções</DrawerTitle>
-              <DrawerDescription>
-                Escolha uma ação para este registro de refeição.
-              </DrawerDescription>
-            </DrawerHeader>
-            <div className="p-4 space-y-4">
-              <Button
-                onClick={handleEdit}
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Editar registro de refeição
+            <h1 className="text-xl font-bold text-nowrap">
+              Visualizar Registro
+            </h1>
+          </div>
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu />
               </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Opções</DrawerTitle>
+                <DrawerDescription>
+                  Escolha uma ação para este registro de refeição.
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 space-y-4">
+                <Button
+                  onClick={handleEdit}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Editar registro de refeição
+                </Button>
 
-              <Button
-                onClick={handleEditFoods}
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <Utensils className="mr-2 h-4 w-4" />
-                Editar comidas associadas
-              </Button>
-              <Button
-                onClick={handleEditMeals}
-                className="w-full justify-start"
-                variant="outline"
-              >
-                <CookingPot className="mr-2 h-4 w-4" />
-                Editar refeições associadas
-              </Button>
-              <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    className="w-full justify-start"
-                    disabled={isRemovingMealLog}
-                    variant="destructive"
-                  >
-                    {isRemovingMealLog ? (
-                      <>
-                        <Loader2 className="animate-spin" />
-                      </>
-                    ) : (
-                      <>
-                        <Trash className="mr-2 h-4 w-4" />
+                <Button
+                  onClick={handleEditFoods}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <Utensils className="mr-2 h-4 w-4" />
+                  Editar comidas associadas
+                </Button>
+                <Button
+                  onClick={handleEditMeals}
+                  className="w-full justify-start"
+                  variant="outline"
+                >
+                  <CookingPot className="mr-2 h-4 w-4" />
+                  Editar refeições associadas
+                </Button>
+                <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="w-full justify-start"
+                      disabled={isRemovingMealLog}
+                      variant="destructive"
+                    >
+                      {isRemovingMealLog ? (
+                        <>
+                          <Loader2 className="animate-spin" />
+                        </>
+                      ) : (
+                        <>
+                          <Trash className="mr-2 h-4 w-4" />
+                          Excluir registro de refeição
+                        </>
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        O registro dessa refeição será excluído permanentemente.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>
                         Excluir registro de refeição
-                      </>
-                    )}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      O registro dessa refeição será excluído permanentemente.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>
-                      Excluir registro de refeição
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant="outline">Cancelar</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <DrawerFooter>
+                <DrawerClose asChild>
+                  <Button variant="outline">Cancelar</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        </div>
+        <Separator className="my-4 bg-muted-foreground" />
+        <MealLogInfo mealLogId={mealLogId} />
+        <MealLogNutritionalInfo mealLogId={mealLogId} />
+        <MealLogFoods mealLogId={mealLogId} />
+        <MealLogMeals mealLogId={mealLogId} />
       </div>
-      <Separator className="my-4 bg-muted-foreground" />
-      <MealLogInfo mealLogId={mealLogId} />
-      <MealLogNutritionalInfo mealLogId={mealLogId} />
-      <MealLogFoods mealLogId={mealLogId} />
-      <MealLogMeals mealLogId={mealLogId} />
-    </div>
+    </>
   );
 }
