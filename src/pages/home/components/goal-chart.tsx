@@ -123,7 +123,7 @@ export function GoalChart({
               Meta atingida! <TrendingUp className="h-4 w-4 text-green-500" />
             </>
           ) : (
-            <>Faltam {target - consumed}{unit} para a meta</>
+            <>Faltam {(target - consumed).toFixed(2)}{unit} para a meta</>
           )}
         </div>
         <div className="leading-none text-muted-foreground">
