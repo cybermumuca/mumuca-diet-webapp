@@ -34,7 +34,7 @@ export function Notifications() {
 
   return (
     <>
-      <Helmet title="Prefêrencias de Notificação" />
+      <Helmet title="Preferências de Notificação" />
       <div className="container mx-auto px-8 py-6 max-w-2xl">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
