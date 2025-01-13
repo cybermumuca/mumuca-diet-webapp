@@ -22,11 +22,7 @@ mumuca.diet é uma aplicação web desenvolvida com React e TypeScript para gere
 
 ## 🚀 Deploy
 
-A aplicação foi implantada utilizando a Vercel, proporcionando um processo de deploy contínuo e eficiente.
-
-> [!TIP]
-> Para mais detalhes sobre como realizar o deploy de aplicações com Vercel, consulte a [documentação oficial](https://vercel.com/docs).
-
+A aplicação foi implantada utilizando a Vercel, proporcionando um processo de deploy contínuo e integrado.
 
 ## 👤 Autor
 
