@@ -1,5 +1,5 @@
 # mumuca.diet
-mumuca.diet é uma aplicação web desenvolvida com React e TypeScript para gerenciamento de refeições, registro de progresso corporal, acompanhamento de metas nutricionais e muito mais. Este projeto foi criado para auxiliar pessoas que desejam manter um estilo de vida saudável através de um webapp intuitivo e amigável utilizando uma [API](https://github.com/cybermumuca/mumuca-diet-server#mumucadiet-backend).
+mumuca.diet é uma aplicação web desenvolvida com React e TypeScript para gerenciamento de refeições, registro de progresso corporal, acompanhamento de metas nutricionais e muito mais. Este projeto foi criado para auxiliar pessoas que desejam manter um estilo de vida saudável através de um webapp intuitivo e amigável que utiliza uma [API](https://github.com/cybermumuca/mumuca-diet-server#mumucadiet-backend).
 
 ## 💡 Principais Funcionalidades
 - Controle do consumo de micronutrientes, macronutrientes, água e calorias.⚡
